@@ -28,45 +28,36 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.net.URLEncoder;
-import java.util.Map;
 
-public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends ActionBarActivity {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
     private UserLoginTask mAuthTask = null;
-
-    // UI references.
-    private AutoCompleteTextView mEmailView;
+    private EditText mLoginView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private String token;
+    private String projectsList = null;
+    private ArrayList<HashMap<String,String>> projects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
 
+        mLoginView = (EditText)findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -91,10 +82,11 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    private void populateAutoComplete() {
-        getLoaderManager().initLoader(0, null, this);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_login, menu);
+        return true;
     }
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -107,18 +99,23 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
         }
 
         // Reset errors.
-        mEmailView.setError(null);
+        mLoginView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
+        String email = mLoginView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+        else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -126,36 +123,34 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            mLoginView.setError(getString(R.string.error_field_required));
+            focusView = mLoginView;
             cancel = true;
         } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+            mLoginView.setError(getString(R.string.error_invalid_email));
+            focusView = mLoginView;
             cancel = true;
         }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
+
+            // TODO: Ici lacher un toast
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask.execute((Void)null);
         }
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("_");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 7;
     }
 
     /**
@@ -194,59 +189,8 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
 
 
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
@@ -254,79 +198,113 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
+        private final String mLogin;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
+        UserLoginTask(String login, String password) {
+            mLogin = login;
             mPassword = password;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            /*
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-            */
 
             System.setProperty("http.keepAlive", "false");
-            OutputStreamWriter writer = null;
-            BufferedReader reader = null;
-            URLConnection connection = null;
+            OutputStreamWriter writer;
+            BufferedReader reader;
 
             try {
-                /*
-                String donnees = URLEncoder.encode("login", "UTF-8")+ "="+URLEncoder.encode(mEmail, "UTF-8");
-                donnees += "&"+URLEncoder.encode("password", "UTF-8")+ "=" + URLEncoder.encode(mPassword, "UTF-8");
 
-                URL url = new URL("https://intra.epitech.eu/login");
-                connection = url.openConnection();
-                connection.setDoOutput(true);
+                String donnees = URLEncoder.encode("login", "UTF-8") + "=" + URLEncoder.encode(mLogin, "UTF-8");
+                donnees += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(mPassword, "UTF-8");
+                URL url = new URL("http://epitech-api.herokuapp.com/login");
+                HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
 
-                writer = new OutputStreamWriter(connection.getOutputStream());
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoOutput(true);
+                urlConnection.connect();
+
+                writer = new OutputStreamWriter(urlConnection.getOutputStream());
                 writer.write(donnees);
                 writer.flush();
 
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
+                int responseCode = urlConnection.getResponseCode();
+                if (responseCode >= 400) {
+                    System.out.println(responseCode);
                 }
-                */
+                else {
+                    reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
-                Map<String, String> param = new HashMap<String, String>();
+                    String line;
+                    String fResult = "";
 
-                param.put("login", mEmail);
-                param.put("password", mPassword);
+                    while ((line = reader.readLine()) != null) {
+                        fResult += line;
+                    }
 
-                // Faire request en JSON
+                    JSONObject myObject = new JSONObject(fResult);
+                    token = myObject.getString("token");
+
+                    System.out.println("Connected succesfully!");
+                    getProjects();
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
-            finally {
-                try{reader.close();}catch(Exception e){}
-                try{writer.close();} catch (Exception e) {}
-            }
 
-            // TODO: register the new account here.
             return true;
+        }
+
+        private void getProjects() {
+            OutputStreamWriter writer;
+            BufferedReader reader;
+
+            try {
+
+                String donnees = URLEncoder.encode("token", "UTF-8") + "=" + URLEncoder.encode(token, "UTF-8");
+                URL url = new URL("http://epitech-api.herokuapp.com/infos");
+                HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoOutput(true);
+                urlConnection.connect();
+
+                writer = new OutputStreamWriter(urlConnection.getOutputStream());
+                writer.write(donnees);
+                writer.flush();
+
+                int responseCode = urlConnection.getResponseCode();
+                if (responseCode >= 400) {
+                    System.out.println(responseCode);
+                }
+                else {
+                    reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+                    String line;
+                    String fResult = "";
+
+                    while ((line = reader.readLine()) != null) {
+                        fResult += line;
+                    }
+
+                    JSONObject myObject = new JSONObject(fResult);
+                    JSONObject projs = myObject.getJSONObject("board");
+                    JSONArray p = projs.getJSONArray("projets");
+                    String projects = "";
+
+                    for (int i=0; i < p.length(); ++i) {
+                        JSONObject proj = p.getJSONObject(i);
+
+                        projects += proj.getString("title") + " - ";
+                        projects += proj.getString("timeline_end") + "\n";
+                    }
+
+                    projectsList = projects;
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -336,6 +314,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
 
             if (success) {
                 finish();
+                // TODO: call une autre activité avec la liste des projets & le token
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -347,12 +326,6 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
     }
 }
 
