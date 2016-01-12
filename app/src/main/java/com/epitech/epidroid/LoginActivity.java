@@ -28,6 +28,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -133,11 +134,11 @@ public class LoginActivity extends ActionBarActivity {
         } else {
             showProgress(true);
 
-            HashMap<String, String> netOptions = new HashMap();
+            HashMap<String, String> netOptions = new HashMap<String, String>();
             netOptions.put("requestMethod", "POST");
             netOptions.put("domain", "login");
 
-            HashMap<String, String> args = new HashMap();
+            HashMap<String, String> args = new HashMap<String, String>();
             args.put("login", email);
             args.put("password", password);
 
@@ -149,6 +150,10 @@ public class LoginActivity extends ActionBarActivity {
 
     public void requestCallback(JSONObject result) {
         if (result == null) {
+            mAuthTask = null;
+            showProgress(false);
+
+            Toast.makeText(this, "Connection failed", Toast.LENGTH_SHORT).show();
             return;
         }
         try {

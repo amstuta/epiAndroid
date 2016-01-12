@@ -33,11 +33,11 @@ public class MainActivity extends ActionBarActivity {
             finish();
         }
         else {
-            HashMap<String, String> netOptions = new HashMap();
+            HashMap<String, String> netOptions = new HashMap<String, String>();
             netOptions.put("requestMethod", "POST");
             netOptions.put("domain", "infos");
 
-            HashMap<String, String> args = new HashMap();
+            HashMap<String, String> args = new HashMap<String, String>();
             args.put("token", glob.token);
 
             reqHandler.execute(this, netOptions, args);
