@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -43,9 +44,7 @@ import java.util.HashMap;
 
 public class LoginActivity extends ActionBarActivity {
 
-    //private UserLoginTask mAuthTask = null;
     private RequestAPI mAuthTask = null;
-
     private EditText mLoginView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -53,6 +52,7 @@ public class LoginActivity extends ActionBarActivity {
     private String token;
     private String projectsList = null;
     private ArrayList<HashMap<String, String>> projects;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,17 +84,14 @@ public class LoginActivity extends ActionBarActivity {
         mProgressView = findViewById(R.id.login_progress);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_login, menu);
         return true;
     }
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
+
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
@@ -104,14 +101,12 @@ public class LoginActivity extends ActionBarActivity {
         mLoginView.setError(null);
         mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
         String email = mLoginView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
@@ -122,7 +117,6 @@ public class LoginActivity extends ActionBarActivity {
             cancel = true;
         }
 
-        // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mLoginView.setError(getString(R.string.error_field_required));
             focusView = mLoginView;
@@ -134,14 +128,11 @@ public class LoginActivity extends ActionBarActivity {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
 
             // TODO: Ici lacher un toast
             focusView.requestFocus();
         } else {
             showProgress(true);
-
 
             HashMap<String, String> netOptions = new HashMap<>();
             netOptions.put("requestMethod", "POST");
@@ -151,25 +142,26 @@ public class LoginActivity extends ActionBarActivity {
             args.put("login", email);
             args.put("password", password);
 
-            //mAuthTask = new UserLoginTask(email, password);
             mAuthTask = new RequestAPI();
             mAuthTask.execute(this, netOptions, args);
         }
     }
 
+
     public void requestCallback(JSONObject result) {
         if (result == null) {
             return;
         }
-
-        TextView projs = (TextView)findViewById(R.id.projects);
         try {
             token = result.getString("token");
-            projs.setText("Connected succesfully : " + token);
+            EpiContext context = (EpiContext)getApplication();
+            context.token = token;
+
             finish();
+            startActivity(new Intent(this, MainActivity.class));
         }
-        catch (JSONException e) {
-            projs.setText("Connection failed.");
+        catch (Exception e) {
+            e.printStackTrace();
         }
         finally {
             mAuthTask = null;
@@ -177,17 +169,17 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
 
+
     private boolean isEmailValid(String email) {
         return email.contains("_");
     }
+
 
     private boolean isPasswordValid(String password) {
         return password.length() > 7;
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -221,148 +213,3 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
 }
-
-
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-
-    /*
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mLogin;
-        private final String mPassword;
-
-        UserLoginTask(String login, String password) {
-            mLogin = login;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-
-            System.setProperty("http.keepAlive", "false");
-            OutputStreamWriter writer;
-            BufferedReader reader;
-
-            try {
-
-                String donnees = URLEncoder.encode("login", "UTF-8") + "=" + URLEncoder.encode(mLogin, "UTF-8");
-                donnees += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(mPassword, "UTF-8");
-                URL url = new URL("http://epitech-api.herokuapp.com/login");
-                HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
-
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-                urlConnection.connect();
-
-                writer = new OutputStreamWriter(urlConnection.getOutputStream());
-                writer.write(donnees);
-                writer.flush();
-
-                int responseCode = urlConnection.getResponseCode();
-                if (responseCode >= 400) {
-                    System.out.println(responseCode);
-                }
-                else {
-                    reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-                    String line;
-                    String fResult = "";
-
-                    while ((line = reader.readLine()) != null) {
-                        fResult += line;
-                    }
-
-                    JSONObject myObject = new JSONObject(fResult);
-                    token = myObject.getString("token");
-
-                    System.out.println("Connected succesfully!");
-                    getProjects();
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return true;
-        }
-
-        private void getProjects() {
-            OutputStreamWriter writer;
-            BufferedReader reader;
-
-            try {
-
-                String donnees = URLEncoder.encode("token", "UTF-8") + "=" + URLEncoder.encode(token, "UTF-8");
-                URL url = new URL("http://epitech-api.herokuapp.com/infos");
-                HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-                urlConnection.connect();
-
-                writer = new OutputStreamWriter(urlConnection.getOutputStream());
-                writer.write(donnees);
-                writer.flush();
-
-                int responseCode = urlConnection.getResponseCode();
-                if (responseCode >= 400) {
-                    System.out.println(responseCode);
-                }
-                else {
-                    reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-                    String line;
-                    String fResult = "";
-
-                    while ((line = reader.readLine()) != null) {
-                        fResult += line;
-                    }
-
-                    JSONObject myObject = new JSONObject(fResult);
-                    JSONObject projs = myObject.getJSONObject("board");
-                    JSONArray p = projs.getJSONArray("projets");
-                    String projects = "";
-
-                    for (int i=0; i < p.length(); ++i) {
-                        JSONObject proj = p.getJSONObject(i);
-
-                        projects += proj.getString("title") + " - ";
-                        projects += proj.getString("timeline_end") + "\n";
-                    }
-
-                    projectsList = projects;
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                //finish();
-                // TODO: call une autre activité avec la liste des projets & le token
-                TextView projs = (TextView)findViewById(R.id.projects);
-                projs.setText(projectsList);
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
-}
-*/
-

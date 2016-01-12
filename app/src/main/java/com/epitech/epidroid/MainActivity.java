@@ -1,6 +1,7 @@
 package com.epitech.epidroid;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.KeyEvent;
@@ -11,6 +12,7 @@ import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,19 +22,39 @@ import android.view.MenuInflater;
 import 	android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+
 public class MainActivity extends ActionBarActivity {
-    // La chaîne de caractères par défaut
+
+    private RequestAPI reqHandler = new RequestAPI();
+    private ImageRequest imgHandler = new ImageRequest();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EpiContext glob = (EpiContext)getApplication();
-        if (!glob.connected)
-        {
+        if (glob.token == null) {
             Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
+
+            finish();
         }
+        else {
+            HashMap<String, String> netOptions = new HashMap<>();
+            netOptions.put("requestMethod", "POST");
+            netOptions.put("domain", "infos");
+
+            HashMap<String, String> args = new HashMap<>();
+            args.put("token", glob.token);
+
+            reqHandler.execute(this, netOptions, args);
+        }
+
+
         // On récupère toutes les vues dont on a besoin
         /*envoyer = (Button)findViewById(R.id.calcul);
 
@@ -59,6 +81,22 @@ public class MainActivity extends ActionBarActivity {
         mega.setOnClickListener(checkedListener);*/
     }
 
+    public void requestCallback(JSONObject result) {
+        try {
+            JSONObject infos = result.getJSONObject("infos");
+            String picture = infos.getString("picture");
+
+            imgHandler.execute(this, picture);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void imageCallback(Bitmap image) {
+        ImageView img = (ImageView)findViewById(R.id.profileImg);
+        img.setImageBitmap(image);
+    }
 
 /*    private TextWatcher textWatcher = new TextWatcher() {
 

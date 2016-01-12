@@ -12,7 +12,7 @@ public class ImageRequest extends AsyncTask<Object, Void, Bitmap>{
     private Activity caller = null;
 
     @Override
-    protected Bitmap doInBackground(Object ...urls)
+    protected Bitmap doInBackground(Object... urls)
     {
         caller = (Activity)urls[0];
         String urlDisplay = caller.getResources().getString(R.string.api_photos) + urls[1];
