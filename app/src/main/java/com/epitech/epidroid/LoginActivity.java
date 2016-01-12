@@ -97,7 +97,6 @@ public class LoginActivity extends ActionBarActivity {
             return;
         }
 
-        // Reset errors.
         mLoginView.setError(null);
         mPasswordView.setError(null);
 
@@ -134,11 +133,11 @@ public class LoginActivity extends ActionBarActivity {
         } else {
             showProgress(true);
 
-            HashMap<String, String> netOptions = new HashMap<>();
+            HashMap<String, String> netOptions = new HashMap();
             netOptions.put("requestMethod", "POST");
             netOptions.put("domain", "login");
 
-            HashMap<String, String> args = new HashMap<>();
+            HashMap<String, String> args = new HashMap();
             args.put("login", email);
             args.put("password", password);
 
