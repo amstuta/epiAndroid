@@ -98,6 +98,40 @@ public class MainActivity extends ActionBarActivity {
         img.setImageBitmap(image);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.action_refresh:
+                Toast.makeText(this, "Refresh selected", Toast.LENGTH_SHORT).show();
+                break;
+            // action with ID action_settings was selected
+            case R.id.action_settings:
+                EpiContext context = (EpiContext)getApplication();
+
+                if (context.token == null) {
+                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(i);
+                }
+                else {
+                    Intent i = new Intent(getApplicationContext(), DisconnectActivity.class);
+                    startActivity(i);
+                }
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
 /*    private TextWatcher textWatcher = new TextWatcher() {
 
         @Override
@@ -170,35 +204,6 @@ public class MainActivity extends ActionBarActivity {
             if(!((CheckBox)v).isChecked() && result.getText().equals(megaString))
                 result.setText(defaut);
         }
-    };
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // action with ID action_refresh was selected
-            case R.id.action_refresh:
-                Toast.makeText(this, "Refresh selected", Toast.LENGTH_SHORT)
-                        .show();
-                break;
-            // action with ID action_settings was selected
-            case R.id.action_settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT)
-                        .show();
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
-                break;
-            default:
-                break;
-        }
-
-        return true;
-    }*/
-
+    };*/
 
 }

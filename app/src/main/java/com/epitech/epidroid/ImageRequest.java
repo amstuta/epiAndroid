@@ -29,7 +29,7 @@ public class ImageRequest extends AsyncTask<Object, Void, Bitmap>{
     @Override
     protected void onPostExecute(final Bitmap image) {
         try {
-            caller.getClass().getMethod("imageCallback", Bitmap.class).invoke(caller, image);
+            caller.getClass().getMethod(caller.getResources().getString(R.string.callback_images), Bitmap.class).invoke(caller, image);
         }
         catch (Exception e) {
             e.printStackTrace();
