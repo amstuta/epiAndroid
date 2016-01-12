@@ -166,6 +166,7 @@ public class LoginActivity extends ActionBarActivity {
         try {
             token = result.getString("token");
             projs.setText("Connected succesfully : " + token);
+            finish();
         }
         catch (JSONException e) {
             projs.setText("Connection failed.");

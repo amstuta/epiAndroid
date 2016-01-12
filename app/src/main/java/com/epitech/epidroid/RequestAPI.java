@@ -24,7 +24,9 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
     protected Boolean doInBackground(Object... objs) {
 
         callback = objs[0];
+        @SuppressWarnings("unchecked")
         HashMap<String,String> netOptions = (HashMap<String, String>)objs[1];
+        @SuppressWarnings("unchecked")
         HashMap<String, String> args = (HashMap<String,String>)objs[2];
 
         System.setProperty("http.keepAlive", "false");

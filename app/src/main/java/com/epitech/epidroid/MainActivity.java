@@ -22,29 +22,19 @@ import android.content.Intent;
 
 public class MainActivity extends ActionBarActivity {
     // La chaîne de caractères par défaut
-    private final String defaut = "Vous devez cliquer sur le bouton « Calculer l'IMC » pour obtenir un résultat.";
-    // La chaîne de caractères de la megafonction
-    private final String megaString = "Vous faites un poids parfait ! Wahou ! Trop fort ! On dirait Brad Pitt (si vous êtes un homme)/Angelina Jolie (si vous êtes une femme)/Willy (si vous êtes un orque) !";
-
-    Button envoyer = null;
-    Button raz = null;
-
-    EditText poids = null;
-    EditText taille = null;
-
-    RadioGroup group = null;
-
-    TextView result = null;
-
-    CheckBox mega = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        EpiContext glob = (EpiContext)getApplication();
+        if (!glob.connected)
+        {
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+        }
         // On récupère toutes les vues dont on a besoin
-        envoyer = (Button)findViewById(R.id.calcul);
+        /*envoyer = (Button)findViewById(R.id.calcul);
 
         raz = (Button)findViewById(R.id.raz);
 
@@ -66,21 +56,11 @@ public class MainActivity extends ActionBarActivity {
         // Solution avec des onKey
         //taille.setOnKeyListener(modificationListener);
         //poids.setOnKeyListener(modificationListener);
-        mega.setOnClickListener(checkedListener);
+        mega.setOnClickListener(checkedListener);*/
     }
 
-  /*
-  // Se lance à chaque fois qu'on appuie sur une touche en étant sur un EditText
-  private OnKeyListener modificationListener = new OnKeyListener() {
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-      // On remet le texte à sa valeur par défaut pour ne pas avoir de résultat incohérent
-      result.setText(defaut);
-      return false;
-    }
-  };*/
 
-    private TextWatcher textWatcher = new TextWatcher() {
+/*    private TextWatcher textWatcher = new TextWatcher() {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -180,7 +160,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return true;
-    }
+    }*/
 
 
 }
