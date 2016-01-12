@@ -1,7 +1,5 @@
 package com.epitech.epidroid;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.ImageView;
