@@ -43,21 +43,23 @@ import java.util.HashMap;
 
 public class LoginActivity extends ActionBarActivity {
 
-    private UserLoginTask mAuthTask = null;
+    //private UserLoginTask mAuthTask = null;
+    private RequestAPI mAuthTask = null;
+
     private EditText mLoginView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
     private String token;
     private String projectsList = null;
-    private ArrayList<HashMap<String,String>> projects;
+    private ArrayList<HashMap<String, String>> projects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mLoginView = (EditText)findViewById(R.id.email);
+        mLoginView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -114,8 +116,7 @@ public class LoginActivity extends ActionBarActivity {
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
-        }
-        else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        } else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -140,8 +141,38 @@ public class LoginActivity extends ActionBarActivity {
             focusView.requestFocus();
         } else {
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void)null);
+
+
+            HashMap<String, String> netOptions = new HashMap<>();
+            netOptions.put("requestMethod", "POST");
+            netOptions.put("domain", "login");
+
+            HashMap<String, String> args = new HashMap<>();
+            args.put("login", email);
+            args.put("password", password);
+
+            //mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new RequestAPI();
+            mAuthTask.execute(this, netOptions, args);
+        }
+    }
+
+    public void requestCallback(JSONObject result) {
+        if (result == null) {
+            return;
+        }
+
+        TextView projs = (TextView)findViewById(R.id.projects);
+        try {
+            token = result.getString("token");
+            projs.setText("Connected succesfully : " + token);
+        }
+        catch (JSONException e) {
+            projs.setText("Connection failed.");
+        }
+        finally {
+            mAuthTask = null;
+            showProgress(false);
         }
     }
 
@@ -188,7 +219,7 @@ public class LoginActivity extends ActionBarActivity {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
-
+}
 
 
 
@@ -196,6 +227,8 @@ public class LoginActivity extends ActionBarActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
+
+    /*
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mLogin;
@@ -313,8 +346,10 @@ public class LoginActivity extends ActionBarActivity {
             showProgress(false);
 
             if (success) {
-                finish();
+                //finish();
                 // TODO: call une autre activité avec la liste des projets & le token
+                TextView projs = (TextView)findViewById(R.id.projects);
+                projs.setText(projectsList);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -328,4 +363,5 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
 }
+*/
 
