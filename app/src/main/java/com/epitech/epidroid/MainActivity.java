@@ -3,15 +3,17 @@ package com.epitech.epidroid;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.view.*;
 import 	android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
+import android.widget.TextView;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -19,6 +21,7 @@ public class MainActivity extends ActionBarActivity {
     private RequestAPI      reqHandler = new RequestAPI();
     private ImageRequest    imgHandler = new ImageRequest();
     private EpiContext      appContext;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+
     public void requestCallback(JSONObject result) {
 
         if (result != null)
@@ -55,15 +59,70 @@ public class MainActivity extends ActionBarActivity {
             String picture = infos.getString(getString(R.string.picture));
 
             imgHandler.execute(this, picture);
+            displayInfos();
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
     public void imageCallback(Bitmap image) {
         ImageView img = (ImageView)findViewById(R.id.profileImg);
         img.setImageBitmap(image);
+    }
+
+
+    private void displayInfos() {
+        JSONObject infos = appContext.userInfos;
+
+        if (infos == null)
+            return;
+
+        try {
+
+            String messages = "";
+            JSONArray history = infos.getJSONArray("history");
+
+            for (int i=0; i < history.length(); ++i) {
+                System.out.println(history.getJSONObject(i));
+
+                messages += history.getJSONObject(i).getString("title") + "\n";
+            }
+
+            TextView msgs = (TextView)findViewById(R.id.messages);
+            msgs.setText(messages);
+
+
+            /*
+            Iterator<?> keys = infos.keys();
+
+            while( keys.hasNext() ) {
+                String key = (String)keys.next();
+
+                System.out.println(key);
+                System.out.println(infos.get(key));
+
+            }*/
+
+            //JSONArray current = infos.getJSONArray(getString(R.string.current));
+
+            /*JSONObject history = infos.getJSONObject("history");
+            JSONObject cur = history.getJSONObject("current");
+
+            System.out.println(cur);*/
+            /*for (int i = 0; i < current.length(); ++i) {
+                System.out.println(current.get(i));
+            }*/
+
+            //String logTime = current.getString(getString(R.string.logTime));
+
+            //TextView log = (TextView)findViewById(R.id.logTime);
+            //log.setText("Log time: " + logTime);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -72,6 +131,7 @@ public class MainActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
