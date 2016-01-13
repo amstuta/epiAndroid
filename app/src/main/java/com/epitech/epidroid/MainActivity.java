@@ -128,16 +128,28 @@ public class MainActivity extends ActionBarActivity {
     public void userCallback(JSONObject result) {
         if (result == null)
             return;
+
+        TextView msgsN = (TextView)findViewById(R.id.logTime);
         try {
+            System.out.println(result);
+
+            Integer credits = result.getInt(getString(R.string.credits));
+            JSONArray gpas = result.getJSONArray(getString(R.string.gpa));
+            String gpaBachelor = gpas.getJSONObject(0).getString(getString(R.string.gpa));
+
+            TextView cred = (TextView)findViewById(R.id.credits);
+            TextView gpa = (TextView)findViewById(R.id.gpa);
+
+            cred.setText("Credits: " + credits.toString());
+            gpa.setText("GPA Bachelor: " + gpaBachelor);
 
             JSONObject ns = result.getJSONObject(getString(R.string.ns_stat));
             String timeActive = ns.getString(getString(R.string.ns_stat_active));
-
-            TextView msgsN = (TextView)findViewById(R.id.logTime);
             msgsN.setText("Netsoul: " + timeActive);
         }
         catch (Exception e) {
             e.printStackTrace();
+            msgsN.setText("Netsoul: 0");
         }
     }
 

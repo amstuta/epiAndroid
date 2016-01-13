@@ -43,5 +43,7 @@
     <string name="history">history</string>
     <string name="ns_stat">nsstat</string>
     <string name="ns_stat_active">active</string>
+    <string name="credits">credits</string>
+    <string name="gpa">gpa</string>
 
 </resources>

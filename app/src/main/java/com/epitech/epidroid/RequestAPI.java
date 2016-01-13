@@ -25,6 +25,7 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
     protected Boolean doInBackground(Object... objs) {
 
         callback = objs[0];
+        Activity act = (Activity)callback;
         @SuppressWarnings("unchecked")
         HashMap<String,String> netOptions = (HashMap<String, String>)objs[1];
         @SuppressWarnings("unchecked")
@@ -36,7 +37,7 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
         String datas = "";
 
         try {
-            methodCb = netOptions.get(((Activity)callback).getResources().getString(R.string.callback));
+            methodCb = netOptions.get(act.getResources().getString(R.string.callback));
 
             for (Map.Entry<String, String> e : args.entrySet()) {
                 if (datas.length() != 0)
@@ -44,15 +45,15 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
                 datas += URLEncoder.encode(e.getKey(), "UTF-8") + "=" + URLEncoder.encode(e.getValue(), "UTF-8");
             }
 
-            URL url = new URL(((Activity)callback).getResources().getString(R.string.api_domain) + netOptions.get(((Activity)callback).getResources().getString(R.string.domain)) + "?" + datas);
+            URL url = new URL(act.getResources().getString(R.string.api_domain) + netOptions.get(act.getResources().getString(R.string.domain)) + "?" + datas);
             HttpURLConnection urlCo = (HttpURLConnection)url.openConnection();
 
-            urlCo.setRequestMethod(netOptions.get(((Activity) callback).getResources().getString(R.string.request_method)));
-            if (netOptions.get("requestMethod").equals("POST"))
+            urlCo.setRequestMethod(netOptions.get(act.getResources().getString(R.string.request_method)));
+            if (netOptions.get(act.getResources().getString(R.string.request_method)).equals(act.getResources().getString(R.string.request_method_post)))
                 urlCo.setDoOutput(true);
             urlCo.connect();
 
-            if (netOptions.get("requestMethod").equals("POST")) {
+            if (netOptions.get(act.getResources().getString(R.string.request_method)).equals(act.getResources().getString(R.string.request_method_post))) {
                 writer = new OutputStreamWriter(urlCo.getOutputStream());
                 writer.write(datas);
                 writer.flush();

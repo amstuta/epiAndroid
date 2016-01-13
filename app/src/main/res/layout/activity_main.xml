@@ -27,6 +27,16 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/credits"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/gpa"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/logTime"/>
 
     <ListView
@@ -34,12 +44,5 @@
         android:layout_height="wrap_content"
         android:id="@+id/messages">
     </ListView>
-
-    <!--
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/messages"/>
-        -->
 
 </LinearLayout>
