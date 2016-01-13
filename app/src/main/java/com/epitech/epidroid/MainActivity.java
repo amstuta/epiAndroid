@@ -13,18 +13,21 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+
 public class MainActivity extends ActionBarActivity {
 
-    private RequestAPI reqHandler = new RequestAPI();
-    private ImageRequest imgHandler = new ImageRequest();
+    private RequestAPI      reqHandler = new RequestAPI();
+    private ImageRequest    imgHandler = new ImageRequest();
+    private EpiContext      appContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EpiContext glob = (EpiContext)getApplication();
-        if (glob.token == null) {
+        appContext = (EpiContext)getApplication();
+
+        if (appContext.token == null) {
             Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
 
@@ -32,24 +35,28 @@ public class MainActivity extends ActionBarActivity {
         }
         else {
             HashMap<String, String> netOptions = new HashMap<String, String>();
-            netOptions.put("requestMethod", "POST");
-            netOptions.put("domain", "infos");
+            netOptions.put(getString(R.string.request_method), getString(R.string.request_method_post));
+            netOptions.put(getString(R.string.domain), getString(R.string.domain_infos));
 
             HashMap<String, String> args = new HashMap<String, String>();
-            args.put("token", glob.token);
+            args.put(getString(R.string.token), appContext.token);
 
             reqHandler.execute(this, netOptions, args);
         }
     }
 
     public void requestCallback(JSONObject result) {
+
+        if (result != null)
+            appContext.userInfos = result;
+
         try {
-            JSONObject infos = result.getJSONObject("infos");
-            String picture = infos.getString("picture");
+            JSONObject infos = result.getJSONObject(getString(R.string.domain_infos));
+            String picture = infos.getString(getString(R.string.picture));
 
             imgHandler.execute(this, picture);
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -69,15 +76,12 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // action with ID action_refresh was selected
-            case R.id.action_refresh:
-                Toast.makeText(this, "Refresh selected", Toast.LENGTH_SHORT).show();
-                break;
-            // action with ID action_settings was selected
-            case R.id.action_settings:
-                EpiContext context = (EpiContext)getApplication();
 
-                if (context.token == null) {
+            case R.id.action_refresh:
+                break;
+
+            case R.id.action_settings:
+                if (appContext.token == null) {
                     Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(i);
                 }

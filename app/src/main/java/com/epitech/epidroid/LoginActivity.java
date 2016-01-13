@@ -113,12 +113,12 @@ public class LoginActivity extends ActionBarActivity {
             showProgress(true);
 
             HashMap<String, String> netOptions = new HashMap<String, String>();
-            netOptions.put("requestMethod", "POST");
-            netOptions.put("domain", "login");
+            netOptions.put(getString(R.string.request_method), getString(R.string.request_method_post));
+            netOptions.put(getString(R.string.domain), getString(R.string.domain_login));
 
             HashMap<String, String> args = new HashMap<String, String>();
-            args.put("login", email);
-            args.put("password", password);
+            args.put(getString(R.string.param_login), email);
+            args.put(getString(R.string.param_pass), password);
 
             mAuthTask = new RequestAPI();
             mAuthTask.execute(this, netOptions, args);
@@ -130,12 +130,11 @@ public class LoginActivity extends ActionBarActivity {
         if (result == null) {
             mAuthTask = null;
             showProgress(false);
-
-            Toast.makeText(this, "Connection failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             return;
         }
         try {
-            token = result.getString("token");
+            token = result.getString(getString(R.string.token));
             EpiContext context = (EpiContext)getApplication();
             context.token = token;
 

@@ -13,7 +13,24 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="connect_fail">Connection failed</string>
+    <string name="param_login">login</string>
+    <string name="param_pass">password</string>
+
+    <!-- Api Strings -->
+    <string name="domain">domain</string>
     <string name="api_domain">"http://epitech-api.herokuapp.com/"</string>
     <string name="api_photos">"https://cdn.local.epitech.eu/userprofil/"</string>
+    <string name="domain_infos">infos</string>
+    <string name="domain_login">login</string>
+
+    <!-- Functions & request strings -->
     <string name="callback_images">imageCallback</string>
+    <string name="request_method">requestMethod</string>
+    <string name="request_method_post">POST</string>
+
+    <!-- Result fields strings -->
+    <string name="token">token</string>
+    <string name="picture">picture</string>
+
 </resources>
