@@ -3,25 +3,29 @@ package com.epitech.epidroid;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Html;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.view.*;
 import 	android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    private RequestAPI      reqHandler = new RequestAPI();
     private ImageRequest    imgHandler = new ImageRequest();
     private EpiContext      appContext;
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> arrayList = new ArrayList<String>();
 
 
     @Override
@@ -30,6 +34,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         appContext = (EpiContext)getApplication();
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
 
         if (appContext.token == null) {
             Intent i = new Intent(this, LoginActivity.class);
@@ -38,9 +43,11 @@ public class MainActivity extends ActionBarActivity {
             finish();
         }
         else {
+            RequestAPI reqHandler = new RequestAPI();
             HashMap<String, String> netOptions = new HashMap<String, String>();
             netOptions.put(getString(R.string.request_method), getString(R.string.request_method_post));
             netOptions.put(getString(R.string.domain), getString(R.string.domain_infos));
+            netOptions.put(getString(R.string.callback), getString(R.string.callback_info));
 
             HashMap<String, String> args = new HashMap<String, String>();
             args.put(getString(R.string.token), appContext.token);
@@ -81,49 +88,53 @@ public class MainActivity extends ActionBarActivity {
             return;
 
         try {
+            JSONObject inf = infos.getJSONObject(getString(R.string.domain_infos));
+            String login = inf.getString(getString(R.string.domain_login));
+            String title = inf.getString(getString(R.string.title));
+
+            TextView ttl = (TextView)findViewById(R.id.title);
+            ttl.setText(title);
 
             String messages = "";
-            JSONArray history = infos.getJSONArray("history");
+            JSONArray history = infos.getJSONArray(getString(R.string.history));
+
+            ListView msgs = (ListView)findViewById(R.id.messages);
+            msgs.setAdapter(adapter);
 
             for (int i=0; i < history.length(); ++i) {
-                System.out.println(history.getJSONObject(i));
-
-                messages += Html.fromHtml(history.getJSONObject(i).getString("title") + "<br/>");
+                arrayList.add(Html.fromHtml(history.getJSONObject(i).getString(getString(R.string.title))).toString());
+                adapter.notifyDataSetChanged();
             }
-            TextView msgs = (TextView)findViewById(R.id.messages);
-            msgs.setText(messages);
 
-            JSONObject inf = infos.getJSONObject(getString(R.string.domain_infos));
-            String log = inf.getString(getString(R.string.logTime));
+            RequestAPI reqHandler = new RequestAPI();
+            HashMap<String, String> netOpts = new HashMap<String, String>();
+            netOpts.put(getString(R.string.request_method), getString(R.string.request_method_get));
+            netOpts.put(getString(R.string.domain), getString(R.string.domain_user));
+            netOpts.put(getString(R.string.callback), getString(R.string.callback_user));
+
+            HashMap<String, String> args = new HashMap<String, String>();
+            args.put(getString(R.string.token), appContext.token);
+            args.put(getString(R.string.domain_user), login);
+
+            reqHandler.execute(this, netOpts, args);
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void userCallback(JSONObject result) {
+        if (result == null)
+            return;
+        try {
+
+            JSONObject ns = result.getJSONObject(getString(R.string.ns_stat));
+            String timeActive = ns.getString(getString(R.string.ns_stat_active));
+
             TextView msgsN = (TextView)findViewById(R.id.logTime);
-            msgsN.setText(log != "null"? log : "0");
-
-
-            /*
-            Iterator<?> keys = infos.keys();
-
-            while( keys.hasNext() ) {
-                String key = (String)keys.next();
-
-                System.out.println(key);
-                System.out.println(infos.get(key));
-
-            }*/
-
-            //JSONArray current = infos.getJSONArray(getString(R.string.current));
-
-            /*JSONObject history = infos.getJSONObject("history");
-            JSONObject cur = history.getJSONObject("current");
-
-            System.out.println(cur);*/
-            /*for (int i = 0; i < current.length(); ++i) {
-                System.out.println(current.get(i));
-            }*/
-
-            //String logTime = current.getString(getString(R.string.logTime));
-
-            //TextView log = (TextView)findViewById(R.id.logTime);
-            //log.setText("Log time: " + logTime);
+            msgsN.setText("Netsoul: " + timeActive);
         }
         catch (Exception e) {
             e.printStackTrace();

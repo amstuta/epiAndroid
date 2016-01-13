@@ -23,16 +23,25 @@
     <string name="api_photos">"https://cdn.local.epitech.eu/userprofil/"</string>
     <string name="domain_infos">infos</string>
     <string name="domain_login">login</string>
+    <string name="domain_user">user</string>
 
     <!-- Functions & request strings -->
     <string name="callback_images">imageCallback</string>
+    <string name="callback_info">requestCallback</string>
+    <string name="callback_user">userCallback</string>
+    <string name="callback">callback</string>
     <string name="request_method">requestMethod</string>
     <string name="request_method_post">POST</string>
+    <string name="request_method_get">GET</string>
 
     <!-- Result fields strings -->
     <string name="token">token</string>
     <string name="picture">picture</string>
     <string name="current">current</string>
     <string name="logTime">netsoul</string>
+    <string name="title">title</string>
+    <string name="history">history</string>
+    <string name="ns_stat">nsstat</string>
+    <string name="ns_stat_active">active</string>
 
 </resources>

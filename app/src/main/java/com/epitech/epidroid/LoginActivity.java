@@ -115,6 +115,7 @@ public class LoginActivity extends ActionBarActivity {
             HashMap<String, String> netOptions = new HashMap<String, String>();
             netOptions.put(getString(R.string.request_method), getString(R.string.request_method_post));
             netOptions.put(getString(R.string.domain), getString(R.string.domain_login));
+            netOptions.put(getString(R.string.callback), getString(R.string.callback_info));
 
             HashMap<String, String> args = new HashMap<String, String>();
             args.put(getString(R.string.param_login), email);
