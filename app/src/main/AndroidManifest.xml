@@ -3,7 +3,7 @@
     package="com.epitech.epidroid">
 
     <uses-sdk
-        android:minSdkVersion="7"
+        android:minSdkVersion="11"
         android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -41,6 +41,10 @@
         <activity
             android:name=".ModulesActivity"
             android:label="@string/title_activity_modules">
+        </activity>
+        <activity
+            android:name=".CalendarActivity"
+            android:label="@string/title_activity_calendar">
         </activity>
     </application>
 

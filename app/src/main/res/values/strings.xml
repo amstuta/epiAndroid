@@ -25,6 +25,7 @@
     <string name="domain_login">login</string>
     <string name="domain_user">user</string>
     <string name="domain_modules">modules</string>
+    <string name="domain_planning">planning</string>
 
     <!-- Functions & request strings -->
     <string name="callback_images">imageCallback</string>
@@ -48,5 +49,8 @@
     <string name="credits">credits</string>
     <string name="gpa">gpa</string>
     <string name="title_activity_modules">ModulesActivity</string>
+    <string name="title_activity_calendar">CalendarActivity</string>
+    <string name="planning_start">start</string>
+    <string name="planning_end">end</string>
 
 </resources>

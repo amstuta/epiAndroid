@@ -128,7 +128,6 @@ public class MainActivity extends ActionBarActivity {
 
         TextView msgsN = (TextView)findViewById(R.id.logTime);
         try {
-            System.out.println(result);
 
             Integer credits = result.getInt(getString(R.string.credits));
             JSONArray gpas = result.getJSONArray(getString(R.string.gpa));
@@ -176,6 +175,12 @@ public class MainActivity extends ActionBarActivity {
                     startActivity(in);
                 }
                 break;
+
+            case R.id.action_calendar:
+                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
+                startActivity(inte);
+                break;
+
             default:
                 break;
         }

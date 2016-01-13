@@ -75,6 +75,12 @@ public class ModulesActivity extends ActionBarActivity {
                     startActivity(in);
                 }
                 break;
+
+            case R.id.action_calendar:
+                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
+                startActivity(inte);
+                break;
+
             default:
                 break;
         }

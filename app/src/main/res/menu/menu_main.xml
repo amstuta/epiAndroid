@@ -11,6 +11,12 @@
         android:title="Modules" />
 
     <item
+        android:id="@+id/action_calendar"
+        compat:showAsAction="always"
+        android:icon="@drawable/ic_action_calendar"
+        android:title="Calendar"/>
+
+    <item
         android:id="@+id/action_settings"
         compat:showAsAction="always"
         android:icon="@drawable/ic_action_settings"
