@@ -2,6 +2,7 @@ package com.epitech.epidroid;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.ImageView;
 import android.view.*;
 import 	android.support.v7.app.ActionBarActivity;
@@ -87,11 +88,15 @@ public class MainActivity extends ActionBarActivity {
             for (int i=0; i < history.length(); ++i) {
                 System.out.println(history.getJSONObject(i));
 
-                messages += history.getJSONObject(i).getString("title") + "\n";
+                messages += Html.fromHtml(history.getJSONObject(i).getString("title") + "<br/>");
             }
-
             TextView msgs = (TextView)findViewById(R.id.messages);
             msgs.setText(messages);
+
+            JSONObject inf = infos.getJSONObject(getString(R.string.domain_infos));
+            String log = inf.getString(getString(R.string.logTime));
+            TextView msgsN = (TextView)findViewById(R.id.logTime);
+            msgsN.setText(log != "null"? log : "0");
 
 
             /*
