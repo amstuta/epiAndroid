@@ -24,11 +24,13 @@
     <string name="domain_infos">infos</string>
     <string name="domain_login">login</string>
     <string name="domain_user">user</string>
+    <string name="domain_modules">modules</string>
 
     <!-- Functions & request strings -->
     <string name="callback_images">imageCallback</string>
     <string name="callback_info">requestCallback</string>
     <string name="callback_user">userCallback</string>
+    <string name="callback_modules">modulesCallback</string>
     <string name="callback">callback</string>
     <string name="request_method">requestMethod</string>
     <string name="request_method_post">POST</string>

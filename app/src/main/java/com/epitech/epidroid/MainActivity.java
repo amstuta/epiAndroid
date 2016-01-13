@@ -145,7 +145,6 @@ public class MainActivity extends ActionBarActivity {
             msgsN.setText("Netsoul: " + timeActive);
         }
         catch (Exception e) {
-            e.printStackTrace();
             msgsN.setText("Netsoul: 0");
         }
     }

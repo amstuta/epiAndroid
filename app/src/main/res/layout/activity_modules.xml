@@ -9,9 +9,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.epitech.epidroid.ModulesActivity">
 
-    <TextView
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GROS ENCULE"/>
+        android:id="@+id/modules"
+        android:clickable="true">
+    </ListView>
 
 </RelativeLayout>
