@@ -44,16 +44,19 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
                 datas += URLEncoder.encode(e.getKey(), "UTF-8") + "=" + URLEncoder.encode(e.getValue(), "UTF-8");
             }
 
-            URL url = new URL(((Activity)callback).getResources().getString(R.string.api_domain) + netOptions.get(((Activity)callback).getResources().getString(R.string.domain)));
+            URL url = new URL(((Activity)callback).getResources().getString(R.string.api_domain) + netOptions.get(((Activity)callback).getResources().getString(R.string.domain)) + "?" + datas);
             HttpURLConnection urlCo = (HttpURLConnection)url.openConnection();
 
-            urlCo.setRequestMethod(netOptions.get(((Activity)callback).getResources().getString(R.string.request_method)));
-            urlCo.setDoOutput(true);
+            urlCo.setRequestMethod(netOptions.get(((Activity) callback).getResources().getString(R.string.request_method)));
+            if (netOptions.get("requestMethod").equals("POST"))
+                urlCo.setDoOutput(true);
             urlCo.connect();
 
-            writer = new OutputStreamWriter(urlCo.getOutputStream());
-            writer.write(datas);
-            writer.flush();
+            if (netOptions.get("requestMethod").equals("POST")) {
+                writer = new OutputStreamWriter(urlCo.getOutputStream());
+                writer.write(datas);
+                writer.flush();
+            }
 
             int responseCode = urlCo.getResponseCode();
             if (responseCode >= 400) {
