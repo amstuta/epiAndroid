@@ -13,11 +13,9 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -39,7 +37,6 @@ public class MainActivity extends ActionBarActivity {
         if (appContext.token == null) {
             Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
-
             finish();
         }
         else {
@@ -165,17 +162,19 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
-            case R.id.action_refresh:
+            case R.id.action_modules:
+                Intent i = new Intent(getApplicationContext(), ModulesActivity.class);
+                startActivity(i);
                 break;
 
             case R.id.action_settings:
                 if (appContext.token == null) {
-                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(i);
+                    Intent in = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(in);
                 }
                 else {
-                    Intent i = new Intent(getApplicationContext(), DisconnectActivity.class);
-                    startActivity(i);
+                    Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
+                    startActivity(in);
                 }
                 break;
             default:

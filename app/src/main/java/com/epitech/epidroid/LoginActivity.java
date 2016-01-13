@@ -66,13 +66,6 @@ public class LoginActivity extends ActionBarActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
-
-
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
