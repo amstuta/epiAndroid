@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -34,7 +35,7 @@ public class ModulesActivity extends AbstractActivity {
         setContentView(R.layout.activity_modules);
 
         appContext = (EpiContext)getApplication();
-        vAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, vArrayList);
+        vAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, vArrayList);
 
         NavigationDrawerFragment mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -110,12 +111,17 @@ public class ModulesActivity extends AbstractActivity {
         try {
 
             JSONArray mods = result.getJSONArray(getString(R.string.domain_modules));
-            ListView msgs = (ListView)findViewById(R.id.modules);
+            Spinner msgs = (Spinner)findViewById(R.id.modules);
 
-            msgs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            msgs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemSelected(AdapterView parent, View view, int position, long id) {
                     Toast.makeText(getBaseContext(), "YOLO", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView view) {
+
                 }
             });
 
@@ -126,6 +132,7 @@ public class ModulesActivity extends AbstractActivity {
             }
         }
         catch (Exception e) {
+            e.printStackTrace();
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             finish();
         }

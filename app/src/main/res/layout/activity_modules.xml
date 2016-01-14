@@ -7,17 +7,23 @@
     android:layout_height="match_parent"
     tools:context="com.epitech.epidroid.ModulesActivity">
 
+    <!--<ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/modules"
+        android:clickable="true">
+    </ListView>-->
     <LinearLayout
         android:id="@+id/container"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <Spinner
             android:id="@+id/modules"
-            android:clickable="true" />
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/spinner_title"
+            />
 
     </LinearLayout>
 
