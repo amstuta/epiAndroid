@@ -1,6 +1,7 @@
 package com.epitech.epidroid;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -57,14 +58,28 @@ public class ProjectsActivity extends AbstractActivity {
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
+                Intent inter = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(inter);
                 mTitle = getString(R.string.title_section1);
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
+                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
+                startActivity(inte);
+
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                Intent i = new Intent(getApplicationContext(), ModulesActivity.class);
+                startActivity(i);
                 break;
+            case 4:
+                break;
+            case 5:
+                Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
+                startActivity(in);
+                break;
+
         }
     }
 
