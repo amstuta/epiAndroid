@@ -22,4 +22,11 @@
         android:icon="@drawable/ic_action_settings"
         android:title="Settings" />
 
+    <item
+        android:id="@+id/action_new"
+        compat:showAsAction="always"
+        android:icon="@drawable/ic_action_add"
+        android:title="New"
+        />
+
 </menu>

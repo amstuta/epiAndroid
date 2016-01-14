@@ -1,0 +1,35 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.epitech.epidroid.ProjectsActivity">
+
+    <!--
+    <item
+        android:id="@+id/action_example"
+        android:title="@string/action_example"
+        app:showAsAction="withText|ifRoom" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />-->
+
+    <item
+        android:id="@+id/action_modules"
+        android:icon="@drawable/ic_action_modules"
+        android:title="Modules"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_calendar"
+        android:icon="@drawable/ic_action_calendar"
+        android:title="Calendar"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_action_settings"
+        android:title="Settings"
+        app:showAsAction="always"/>
+
+</menu>
