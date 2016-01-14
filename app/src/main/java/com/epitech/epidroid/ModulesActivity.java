@@ -34,6 +34,7 @@ public class ModulesActivity extends AbstractActivity {
     private ArrayList<String>       vArrayList = new ArrayList<String>();
     private CharSequence            mTitle;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,10 +87,8 @@ public class ModulesActivity extends AbstractActivity {
             msgs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView parent, View view, int position, long id) {
-                    ++position;
-                    ListView modsList = (ListView) findViewById(R.id.modules_title);
-                    Toast.makeText(getBaseContext(), "Semester " + position + " selected", Toast.LENGTH_SHORT).show();
 
+                    Toast.makeText(getBaseContext(), "Semester " + ++position + " selected", Toast.LENGTH_SHORT).show();
                     if (position < modules.length && modules[position] != null) {
                         ArrayList<JSONObject> tmp = modules[position];
 
@@ -107,7 +106,6 @@ public class ModulesActivity extends AbstractActivity {
                             e.printStackTrace();
                         }
                     }
-
                 }
 
                 @Override

@@ -27,6 +27,12 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/action_projects"
+        android:icon="@drawable/ic_action_calendar"
+        android:title="Projects"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/action_signout"
         android:icon="@drawable/ic_action_logout"
         android:title="Log out"
