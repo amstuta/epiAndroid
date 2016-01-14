@@ -6,13 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
 import android.text.Html;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.content.Intent;
@@ -40,20 +35,9 @@ public class MainActivity extends AbstractActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
-
-        NavigationDrawerFragment mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        NavigationDrawerFragment mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
-
-
-
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout)findViewById(R.id.drawer_layout));
 
 
         appContext = (EpiContext)getApplication();
@@ -173,52 +157,6 @@ public class MainActivity extends AbstractActivity {
         }
     }
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.action_modules:
-                Intent i = new Intent(getApplicationContext(), ModulesActivity.class);
-                startActivity(i);
-                break;
-
-            case R.id.action_settings:
-                if (appContext.token == null) {
-                    Intent in = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(in);
-                }
-                else {
-                    Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
-                    startActivity(in);
-                }
-                break;
-
-            case R.id.action_calendar:
-                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
-                startActivity(inte);
-                break;
-
-            case R.id.action_new:
-                Intent inten = new Intent(getApplicationContext(), ProjectsActivity.class);
-                startActivity(inten);
-                break;
-
-            default:
-                break;
-        }
-
-        return true;
-    }
-    */
-
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
@@ -230,33 +168,38 @@ public class MainActivity extends AbstractActivity {
 
     public void onSectionAttached(int number) {
         switch (number) {
-            case 1:
+            case 2:
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            case 3:
                 mTitle = getString(R.string.title_section2);
                 Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
                 startActivity(inte);
-
                 break;
-            case 3:
+            case 4:
                 mTitle = getString(R.string.title_section3);
                 Intent i = new Intent(getApplicationContext(), ModulesActivity.class);
                 startActivity(i);
                 break;
-            case 4:
+            case 5:
+                mTitle = getString(R.string.title_section4);
                 Intent inten = new Intent(getApplicationContext(), ProjectsActivity.class);
                 startActivity(inten);
                 break;
-            case 5:
+            case 6:
+                mTitle = getString(R.string.title_section5);
                 Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
                 startActivity(in);
                 break;
         }
     }
 
-
-
+    public void restoreActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(mTitle);
+    }
 
 
 }

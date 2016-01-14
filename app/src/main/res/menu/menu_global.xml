@@ -4,6 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        app:showAsAction="never"
+        android:title=""
+        android:visible="false"/>
+
+    <item
         android:id="@+id/action_home"
         app:showAsAction="always"
         android:icon="@drawable/ic_action_home"

@@ -36,14 +36,9 @@ public class ProjectsActivity extends AbstractActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer,(DrawerLayout)findViewById(R.id.drawer_layout));
     }
 
     @Override
@@ -57,25 +52,27 @@ public class ProjectsActivity extends AbstractActivity {
 
     public void onSectionAttached(int number) {
         switch (number) {
-            case 1:
+            case 2:
+                mTitle = getString(R.string.title_section1);
                 Intent inter = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(inter);
-                mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            case 3:
                 mTitle = getString(R.string.title_section2);
                 Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
                 startActivity(inte);
 
                 break;
-            case 3:
+            case 4:
                 mTitle = getString(R.string.title_section3);
                 Intent i = new Intent(getApplicationContext(), ModulesActivity.class);
                 startActivity(i);
                 break;
-            case 4:
-                break;
             case 5:
+                mTitle = getString(R.string.title_section4);
+                break;
+            case 6:
+                mTitle = getString(R.string.title_section5);
                 Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
                 startActivity(in);
                 break;
