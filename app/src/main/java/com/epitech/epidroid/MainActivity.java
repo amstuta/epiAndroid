@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends AbstractActivity {
 
     private ImageRequest    imgHandler = new ImageRequest();
     private EpiContext      appContext;
@@ -224,7 +224,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, MainActivity.PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
     }
 
@@ -235,48 +235,28 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
+                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
+                startActivity(inte);
+
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                Intent i = new Intent(getApplicationContext(), ModulesActivity.class);
+                startActivity(i);
+                break;
+            case 4:
+                Intent inten = new Intent(getApplicationContext(), ProjectsActivity.class);
+                startActivity(inten);
+                break;
+            case 5:
+                Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
+                startActivity(in);
                 break;
         }
     }
 
 
 
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_projects, container, false);
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
-    }
 
 }

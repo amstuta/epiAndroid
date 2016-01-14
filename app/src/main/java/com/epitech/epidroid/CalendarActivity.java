@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
@@ -24,11 +26,15 @@ import android.view.ViewGroup.LayoutParams;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CalendarActivity extends ActionBarActivity {
+public class CalendarActivity extends AbstractActivity{
 
     private EpiContext appContext = null;
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> arrayList = new ArrayList<String>();
+    private CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,5 +150,42 @@ public class CalendarActivity extends ActionBarActivity {
 
         return true;
     }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+        // update the main content by replacing fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .commit();
+    }
+
+    public void onSectionAttached(int number) {
+        switch (number) {
+            case 1:
+                mTitle = getString(R.string.title_section1);
+                break;
+            case 2:
+                mTitle = getString(R.string.title_section2);
+                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
+                startActivity(inte);
+
+                break;
+            case 3:
+                mTitle = getString(R.string.title_section3);
+                Intent i = new Intent(getApplicationContext(), ModulesActivity.class);
+                startActivity(i);
+                break;
+            case 4:
+                Intent inten = new Intent(getApplicationContext(), ProjectsActivity.class);
+                startActivity(inten);
+                break;
+            case 5:
+                Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
+                startActivity(in);
+                break;
+        }
+    }
+
 
 }
