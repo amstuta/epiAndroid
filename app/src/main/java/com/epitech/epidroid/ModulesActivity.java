@@ -17,14 +17,19 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class ModulesActivity extends AbstractActivity {
 
     private EpiContext              appContext = null;
+    private ArrayAdapter<String>    mAdapter;
+    private ArrayList<String>       mArrayList = new ArrayList<String>();
     private ArrayAdapter<String>    vAdapter;
     private ArrayList<String>       vArrayList = new ArrayList<String>();
     private CharSequence            mTitle;
@@ -36,6 +41,7 @@ public class ModulesActivity extends AbstractActivity {
 
         appContext = (EpiContext)getApplication();
         vAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, vArrayList);
+        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayList);
 
         NavigationDrawerFragment mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -59,46 +65,6 @@ public class ModulesActivity extends AbstractActivity {
         reqHandler.execute(this, netOpts, args);
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.action_home:
-                finish();
-                break;
-
-            case R.id.action_settings:
-                if (appContext.token == null) {
-                    Intent in = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(in);
-                }
-                else {
-                    Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
-                    startActivity(in);
-                }
-                break;
-
-            case R.id.action_calendar:
-                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
-                startActivity(inte);
-                break;
-
-            default:
-                break;
-        }
-
-        return true;
-    }
-    */
-
 
     public void modulesCallback(JSONObject result) {
 
@@ -109,27 +75,51 @@ public class ModulesActivity extends AbstractActivity {
         }
 
         try {
-
             JSONArray mods = result.getJSONArray(getString(R.string.domain_modules));
             Spinner msgs = (Spinner)findViewById(R.id.modules);
+            ListView lst = (ListView)findViewById(R.id.modules_title);
+            final ArrayList<JSONObject>[] modules = getDick(mods);
+
+            msgs.setAdapter(vAdapter);
+            lst.setAdapter(mAdapter);
 
             msgs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView parent, View view, int position, long id) {
-                    Toast.makeText(getBaseContext(), "YOLO", Toast.LENGTH_SHORT).show();
+                    ++position;
+                    ListView modsList = (ListView) findViewById(R.id.modules_title);
+                    Toast.makeText(getBaseContext(), "Semester " + position + " selected", Toast.LENGTH_SHORT).show();
+
+                    if (position < modules.length && modules[position] != null) {
+                        ArrayList<JSONObject> tmp = modules[position];
+
+                        mArrayList.clear();
+                        mAdapter.notifyDataSetChanged();
+
+                        try {
+                            for (int i = 0; i < tmp.size(); ++i) {
+                                String modName = tmp.get(i).getString(getString(R.string.title));
+
+                                mArrayList.add(modName);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView view) {
-
                 }
             });
 
-            msgs.setAdapter(vAdapter);
-            for (int i=0; i < mods.length(); ++i) {
-                vArrayList.add(Html.fromHtml(mods.getJSONObject(i).getString(getString(R.string.title))).toString());
+            for (int i = 1; i < modules.length && modules[i] != null; ++i) {
+                vArrayList.add("" + i);
                 vAdapter.notifyDataSetChanged();
             }
+
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -139,9 +129,34 @@ public class ModulesActivity extends AbstractActivity {
     }
 
 
+    private ArrayList<JSONObject>[] getDick(JSONArray mods) {
+        if (mods == null)
+            return null;
+
+        ArrayList<JSONObject>[] res = new ArrayList[11];
+
+        for (int i = 0; i < mods.length(); ++i) {
+
+            try {
+                JSONObject tmp = mods.getJSONObject(i);
+
+                int sem = tmp.getInt(getString(R.string.semester));
+
+                if (res[sem] == null) {
+                    res[sem] = new ArrayList<JSONObject>();
+                }
+                res[sem].add(tmp);
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return res;
+    }
+
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))

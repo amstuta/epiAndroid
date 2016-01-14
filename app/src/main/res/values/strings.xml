@@ -54,7 +54,8 @@
     <string name="planning_end">end</string>
     <string name="title_activity_projects">ProjectsActivity</string>
     <string name="spinner_title">Semesters</string>
-
+    <string name="modules_title">Select a semester</string>
+    <string name="semester">semester</string>
     <string name="title_section0">
     </string>
     <string name="title_section1">Home</string>

@@ -13,17 +13,30 @@
         android:id="@+id/modules"
         android:clickable="true">
     </ListView>-->
+
     <LinearLayout
         android:id="@+id/container"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modules_title"/>
+
         <Spinner
             android:id="@+id/modules"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:prompt="@string/spinner_title"
             />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/modules_title"
+            android:clickable="true" />
 
     </LinearLayout>
 
