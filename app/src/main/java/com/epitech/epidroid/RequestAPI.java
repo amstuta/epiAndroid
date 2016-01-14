@@ -3,6 +3,7 @@ package com.epitech.epidroid;
 import android.app.Activity;
 import android.os.AsyncTask;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -35,6 +36,7 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
         OutputStreamWriter writer;
         BufferedReader reader;
         String datas = "";
+        String fResult = "";
 
         try {
             methodCb = netOptions.get(act.getResources().getString(R.string.callback));
@@ -68,7 +70,6 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
                 reader = new BufferedReader(new InputStreamReader(urlCo.getInputStream()));
 
                 String line;
-                String fResult = "";
 
                 while ((line = reader.readLine()) != null) {
                     fResult += line;
@@ -77,7 +78,19 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+
+            try {
+                JSONArray res = new JSONArray(fResult);
+                // TODO: mettre type retour callback dans netoptions
+                System.out.println(res);
+
+                JSONObject obj = res.getJSONObject(0);
+
+                requestResult = obj;
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         return true;
