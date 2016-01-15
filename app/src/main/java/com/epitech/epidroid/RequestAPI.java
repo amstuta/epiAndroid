@@ -81,12 +81,13 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
 
             try {
                 JSONArray res = new JSONArray(fResult);
-                // TODO: mettre type retour callback dans netoptions
+                JSONObject finale = new JSONObject();
+                finale.put(((Activity)callback).getString(R.string.response), res);
                 System.out.println(res);
 
-                JSONObject obj = res.getJSONObject(0);
+                //JSONObject obj = res.getJSONObject(0);
 
-                requestResult = obj;
+                requestResult = finale;
             }
             catch (Exception ex) {
                 ex.printStackTrace();

@@ -30,6 +30,7 @@
     <string name="domain_modules">modules</string>
     <string name="domain_module">module</string>
     <string name="domain_planning">planning</string>
+    <string name="domain_projects">projects</string>
     <string name="scolarYear">scolaryear</string>
     <string name="codeModule">codemodule</string>
     <string name="codeInstance">codeinstance</string>
@@ -63,6 +64,10 @@
     <string name="spinner_title">Semesters</string>
     <string name="modules_title">Select a semester</string>
     <string name="semester">semester</string>
+    <string name="projects_view">projects</string>
+    <string name="activity_title">acti_title</string>
+    <string name="proj">proj</string>
+    <string name="acti_type">type_acti_code</string>
     <string name="title_section0">
     </string>
     <string name="title_section1">Home</string>
@@ -75,5 +80,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_example">Example action</string>
+    <string name="response">response</string>
 
 </resources>

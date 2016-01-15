@@ -6,12 +6,24 @@
     android:layout_height="match_parent"
     tools:context="com.epitech.epidroid.ProjectsActivity">
 
-    <FrameLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/projects_view"/>
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/project_title"
+            android:clickable="true" />
+
+    </LinearLayout>
 
     <fragment
         android:id="@+id/navigation_drawer"
