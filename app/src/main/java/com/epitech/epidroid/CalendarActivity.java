@@ -100,7 +100,6 @@ public class CalendarActivity extends AbstractActivity {
 
         Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
         btnDismiss.setOnClickListener(new Button.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
@@ -114,7 +113,6 @@ public class CalendarActivity extends AbstractActivity {
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))

@@ -17,6 +17,9 @@
     <string name="param_login">login</string>
     <string name="param_pass">password</string>
 
+    <!-- Strings related to views -->
+    <string name="popup_module">pModule</string>
+
     <!-- Api Strings -->
     <string name="domain">domain</string>
     <string name="api_domain">"http://epitech-api.herokuapp.com/"</string>
@@ -25,7 +28,11 @@
     <string name="domain_login">login</string>
     <string name="domain_user">user</string>
     <string name="domain_modules">modules</string>
+    <string name="domain_module">module</string>
     <string name="domain_planning">planning</string>
+    <string name="scolarYear">scolaryear</string>
+    <string name="codeModule">codemodule</string>
+    <string name="codeInstance">codeinstance</string>
 
     <!-- Functions & request strings -->
     <string name="callback_images">imageCallback</string>

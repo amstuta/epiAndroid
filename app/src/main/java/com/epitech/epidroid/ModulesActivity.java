@@ -7,13 +7,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -33,6 +39,9 @@ public class ModulesActivity extends AbstractActivity {
     private ArrayAdapter<String>    vAdapter;
     private ArrayList<String>       vArrayList = new ArrayList<String>();
     private CharSequence            mTitle;
+    private int                     selectedSemester = 1;
+    private ArrayList<String>       activitiesArrayList = new ArrayList<String>();
+    private ArrayAdapter<String>    activitiesAdapter;
 
 
     @Override
@@ -43,6 +52,7 @@ public class ModulesActivity extends AbstractActivity {
         appContext = (EpiContext)getApplication();
         vAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, vArrayList);
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayList);
+        activitiesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, activitiesArrayList);
 
         NavigationDrawerFragment mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -89,6 +99,8 @@ public class ModulesActivity extends AbstractActivity {
                 public void onItemSelected(AdapterView parent, View view, int position, long id) {
 
                     Toast.makeText(getBaseContext(), "Semester " + ++position + " selected", Toast.LENGTH_SHORT).show();
+                    selectedSemester = position;
+
                     if (position < modules.length && modules[position] != null) {
                         ArrayList<JSONObject> tmp = modules[position];
 
@@ -118,11 +130,113 @@ public class ModulesActivity extends AbstractActivity {
                 vAdapter.notifyDataSetChanged();
             }
 
+
+            lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    /*ListView lv = (ListView)findViewById(R.id.modules_title);
+                    String selectedFromList = (String)(lv.getItemAtPosition(position));*/
+
+                    ArrayList<JSONObject> sem = modules[selectedSemester];
+                    JSONObject selectedModule = sem.get(position);
+
+                    try {
+                        String scolarYear = selectedModule.getString(getString(R.string.scolarYear));
+                        String codeModule = selectedModule.getString(getString(R.string.codeModule));
+                        String codeInstance = selectedModule.getString(getString(R.string.codeInstance));
+
+                        executeRequestModule(scolarYear, codeModule, codeInstance);
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
         catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             finish();
+        }
+    }
+
+
+    private void executeRequestModule(String scolarYear, String codeModule, String codeInstance) {
+        HashMap<String, String> netOpts = new HashMap<String, String>();
+        netOpts.put(getString(R.string.request_method), getString(R.string.request_method_get));
+        netOpts.put(getString(R.string.domain), getString(R.string.domain_module));
+        netOpts.put(getString(R.string.callback), getString(R.string.callback_info));
+
+        HashMap<String, String> args = new HashMap<String, String>();
+        args.put(getString(R.string.token), appContext.token);
+        args.put(getString(R.string.scolarYear), scolarYear);
+        args.put(getString(R.string.codeModule), codeModule);
+        args.put(getString(R.string.codeInstance), codeInstance);
+
+        RequestAPI reqHandler = new RequestAPI();
+        reqHandler.execute(this, netOpts, args);
+    }
+
+
+    public void requestCallback(JSONObject result) {
+        if (result == null) {
+            Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            String title = result.getString(getString(R.string.title));
+
+
+            LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+            View popupView = layoutInflater.inflate(R.layout.popup_module, null);
+            final PopupWindow popupWindow = new PopupWindow(popupView,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+            TextView moduleName = (TextView)popupView.findViewById(R.id.module_name);
+            moduleName.setText(title);
+
+
+            ListView moduleInfo = (ListView)popupView.findViewById(R.id.module_infos);
+            JSONArray activities = result.getJSONArray("activites");
+
+            activitiesArrayList.clear();
+            moduleInfo.setAdapter(activitiesAdapter);
+
+            for (int i=0; i < activities.length(); ++i) {
+
+                JSONObject tmp = activities.getJSONObject(i);
+                Boolean isProject = tmp.getBoolean("is_projet");
+
+                if (isProject) {
+
+                    String infos = tmp.getString(getString(R.string.title)) + "          ";
+
+                    if (!tmp.getString("note").equals("null"))
+                        infos += tmp.getString("note");
+                    activitiesArrayList.add(infos);
+                    activitiesAdapter.notifyDataSetChanged();
+                }
+            }
+
+
+            Button btnDismiss = (Button) popupView.findViewById(R.id.dismiss);
+            btnDismiss.setOnClickListener(new Button.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                }
+            });
+
+            popupWindow.showAtLocation(popupView, Gravity.RIGHT, Gravity.CENTER, Gravity.CENTER);
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

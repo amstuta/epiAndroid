@@ -99,9 +99,7 @@ public class MainActivity extends AbstractActivity {
             TextView ttl = (TextView)findViewById(R.id.title);
             ttl.setText(title);
 
-            String messages = "";
             JSONArray history = infos.getJSONArray(getString(R.string.history));
-
             ListView msgs = (ListView)findViewById(R.id.messages);
             msgs.setAdapter(adapter);
 
