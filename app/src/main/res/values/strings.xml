@@ -17,9 +17,15 @@
     <string name="param_login">login</string>
     <string name="param_pass">password</string>
 
-    <!-- Strings related to views -->
+    <!-- IDs -->
     <string name="popup_module">pModule</string>
     <string name="popup_projects">pProjects</string>
+    <string name="login_progress">login_progress</string>
+    <string name="login_form">login_form</string>
+    <string name="module_name">module_name</string>
+    <string name="module_grade">module_grade</string>
+    <string name="module_infos">module_infos</string>
+    <string name="dismiss">dismiss</string>
 
     <!-- Api Strings -->
     <string name="domain">domain</string>
