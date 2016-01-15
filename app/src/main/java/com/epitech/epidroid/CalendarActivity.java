@@ -12,11 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.CalendarView.OnDateChangeListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -24,10 +27,11 @@ import java.util.HashMap;
 
 public class CalendarActivity extends AbstractActivity {
 
-    private EpiContext appContext = null;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> arrayList = new ArrayList<String>();
-    private CharSequence mTitle;
+    private EpiContext              appContext = null;
+    private ArrayAdapter<String>    activitiesAdapter;
+    private ArrayList<String>       activitiesList = new ArrayList<String>();
+    private CharSequence            mTitle;
+    private String                  chosenDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,7 @@ public class CalendarActivity extends AbstractActivity {
 
         appContext = (EpiContext)getApplication();
         CalendarView calendar = (CalendarView)findViewById(R.id.calendar);
-
+        activitiesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, activitiesList);
 
         NavigationDrawerFragment mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -52,15 +56,15 @@ public class CalendarActivity extends AbstractActivity {
                 @Override
                 public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
                     Toast.makeText(getApplicationContext(), day + "/" + month + "/" + year, Toast.LENGTH_LONG).show();
-                    String date = "" + year + "-" + (month + 1) + "-" + day;
-                    callAPI(date);
+                    chosenDate = "" + year + "-" + (month + 1) + "-" + day;
+                    callAPI();
                 }
             });
         }
     }
 
 
-    private void callAPI(String date) {
+    private void callAPI() {
         RequestAPI reqHandler = new RequestAPI();
 
         HashMap<String, String> netOpts = new HashMap<String, String>();
@@ -70,8 +74,8 @@ public class CalendarActivity extends AbstractActivity {
 
         HashMap<String, String> args = new HashMap<String, String>();
         args.put(getString(R.string.token), appContext.token);
-        args.put(getString(R.string.planning_start), date);
-        args.put(getString(R.string.planning_end), date);
+        args.put(getString(R.string.planning_start), chosenDate);
+        args.put(getString(R.string.planning_end), chosenDate);
 
         reqHandler.execute(this, netOpts, args);
     }
@@ -85,26 +89,38 @@ public class CalendarActivity extends AbstractActivity {
             return;
         }
 
-        System.out.println("ICI");
-        System.out.println(result);
-        System.out.println("ICI");
-
         LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.popup_calendar, null);
         final PopupWindow popupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        TextView tok = (TextView)popupView.findViewById(R.id.token);
-        tok.setText(appContext.token);
-
         Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
+        TextView date = (TextView)popupView.findViewById(R.id.date);
+        ListView acts = (ListView)popupView.findViewById(R.id.activities);
+
+        activitiesList.clear();
         btnDismiss.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
             }
         });
+        date.setText(chosenDate);
+        acts.setAdapter(activitiesAdapter);
+        try {
+            JSONArray activities = result.getJSONArray(getString(R.string.response));
+
+            for (int i=0; i < activities.length(); ++i) {
+
+                if (activities.getJSONObject(i).getBoolean(getString(R.string.can_register))) {
+                    activitiesList.add(activities.getJSONObject(i).getString(getString(R.string.activity_title)));
+                    activitiesAdapter.notifyDataSetChanged();
+                }
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         popupWindow.showAtLocation(popupView, Gravity.CENTER, Gravity.CENTER, Gravity.CENTER);
 

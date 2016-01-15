@@ -29,6 +29,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -221,10 +222,12 @@ public class ModulesActivity extends AbstractActivity {
 
         try {
             String title = result.getString(getString(R.string.title));
+            String grade = result.getString(getString(R.string.grade));
 
             TextView moduleName = (TextView)pView.findViewById(R.id.module_name);
+            TextView moduleGrade = (TextView)pView.findViewById(R.id.module_grade);
             moduleName.setText(title);
-
+            moduleGrade.setText(getString(R.string.dispGrade) + grade);
 
             ListView moduleInfo = (ListView)pView.findViewById(R.id.module_infos);
             JSONArray activities = result.getJSONArray("activites");

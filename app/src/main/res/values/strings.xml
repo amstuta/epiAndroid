@@ -73,7 +73,7 @@
     <string name="activity_title">acti_title</string>
     <string name="proj">proj</string>
     <string name="acti_type">type_acti_code</string>
-    <string name="title_section0"></string>
+    <string name="title_section0"/>
     <string name="title_section1">Home</string>
     <string name="title_section2">Planning</string>
     <string name="title_section3">Modules</string>
@@ -81,6 +81,9 @@
     <string name="title_section5">Log out</string>
 
     <string name="registered">registered</string>
+    <string name="can_register">module_available</string>
+    <string name="grade">student_grade</string>
+    <string name="dispGrade">Grade: </string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

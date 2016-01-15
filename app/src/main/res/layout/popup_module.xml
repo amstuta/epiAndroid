@@ -22,24 +22,30 @@
         android:id="@+id/login_form"
         android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:id="@+id/module_name"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:id="@+id/module_name"/>
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:id="@+id/module_infos"
-        android:textColor="#FFFFFF" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:id="@+id/module_grade" />
 
-    <Button
-        android:id="@+id/dismiss"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Quit"
-        android:textColor="#FFFFFF" />
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:id="@+id/module_infos"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/dismiss"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Quit"
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 
