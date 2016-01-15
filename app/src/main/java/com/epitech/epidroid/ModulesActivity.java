@@ -47,12 +47,11 @@ public class ModulesActivity extends AbstractActivity {
     private ArrayList<String>       activitiesArrayList = new ArrayList<String>();
     private ArrayAdapter<String>    activitiesAdapter;
 
-
-    private View mLoginFormView;
-    private View mProgressView;
-    private PopupWindow pWIndow;
-    private View pView;
-
+    /* Popup */
+    private View                    mLoginFormView;
+    private View                    mProgressView;
+    private PopupWindow             pWIndow;
+    private View                    pView;
 
 
     @Override

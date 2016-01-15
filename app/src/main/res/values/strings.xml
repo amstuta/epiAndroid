@@ -19,6 +19,7 @@
 
     <!-- Strings related to views -->
     <string name="popup_module">pModule</string>
+    <string name="popup_projects">pProjects</string>
 
     <!-- Api Strings -->
     <string name="domain">domain</string>
@@ -31,19 +32,23 @@
     <string name="domain_module">module</string>
     <string name="domain_planning">planning</string>
     <string name="domain_projects">projects</string>
+    <string name="domain_project">project</string>
     <string name="scolarYear">scolaryear</string>
     <string name="codeModule">codemodule</string>
     <string name="codeInstance">codeinstance</string>
+    <string name="codeActivity">codeacti</string>
 
     <!-- Functions & request strings -->
     <string name="callback_images">imageCallback</string>
     <string name="callback_info">requestCallback</string>
     <string name="callback_user">userCallback</string>
     <string name="callback_modules">modulesCallback</string>
+    <string name="callback_project">projectCallback</string>
     <string name="callback">callback</string>
     <string name="request_method">requestMethod</string>
     <string name="request_method_post">POST</string>
     <string name="request_method_get">GET</string>
+    <string name="request_method_delete">DELETE</string>
 
     <!-- Result fields strings -->
     <string name="token">token</string>
@@ -68,13 +73,14 @@
     <string name="activity_title">acti_title</string>
     <string name="proj">proj</string>
     <string name="acti_type">type_acti_code</string>
-    <string name="title_section0">
-    </string>
+    <string name="title_section0"></string>
     <string name="title_section1">Home</string>
     <string name="title_section2">Planning</string>
     <string name="title_section3">Modules</string>
     <string name="title_section4">Projects</string>
     <string name="title_section5">Log out</string>
+
+    <string name="registered">registered</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
