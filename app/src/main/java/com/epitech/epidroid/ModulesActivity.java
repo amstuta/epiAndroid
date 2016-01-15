@@ -1,6 +1,10 @@
 package com.epitech.epidroid;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -42,6 +46,13 @@ public class ModulesActivity extends AbstractActivity {
     private int                     selectedSemester = 1;
     private ArrayList<String>       activitiesArrayList = new ArrayList<String>();
     private ArrayAdapter<String>    activitiesAdapter;
+
+
+    private View mLoginFormView;
+    private View mProgressView;
+    private PopupWindow pWIndow;
+    private View pView;
+
 
 
     @Override
@@ -135,9 +146,8 @@ public class ModulesActivity extends AbstractActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    /*ListView lv = (ListView)findViewById(R.id.modules_title);
-                    String selectedFromList = (String)(lv.getItemAtPosition(position));*/
-
+                    ListView lv = (ListView)findViewById(R.id.modules_title);
+                    String moduleName = (String)(lv.getItemAtPosition(position));
                     ArrayList<JSONObject> sem = modules[selectedSemester];
                     JSONObject selectedModule = sem.get(position);
 
@@ -146,6 +156,7 @@ public class ModulesActivity extends AbstractActivity {
                         String codeModule = selectedModule.getString(getString(R.string.codeModule));
                         String codeInstance = selectedModule.getString(getString(R.string.codeInstance));
 
+                        Toast.makeText(getApplicationContext(), moduleName, Toast.LENGTH_SHORT).show();
                         executeRequestModule(scolarYear, codeModule, codeInstance);
                     }
                     catch (JSONException e) {
@@ -174,6 +185,30 @@ public class ModulesActivity extends AbstractActivity {
         args.put(getString(R.string.codeModule), codeModule);
         args.put(getString(R.string.codeInstance), codeInstance);
 
+
+        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.popup_module, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        pWIndow = popupWindow;
+        pView = popupView;
+
+        Button btnDismiss = (Button) popupView.findViewById(R.id.dismiss);
+        btnDismiss.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        pWIndow.showAtLocation(pView, Gravity.RIGHT, Gravity.CENTER, Gravity.CENTER);
+        mLoginFormView = pView.findViewById(R.id.login_form);
+        mProgressView = pView.findViewById(R.id.login_progress);
+        showProgress(true);
+
         RequestAPI reqHandler = new RequestAPI();
         reqHandler.execute(this, netOpts, args);
     }
@@ -188,19 +223,11 @@ public class ModulesActivity extends AbstractActivity {
         try {
             String title = result.getString(getString(R.string.title));
 
-
-            LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-            View popupView = layoutInflater.inflate(R.layout.popup_module, null);
-            final PopupWindow popupWindow = new PopupWindow(popupView,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-
-
-            TextView moduleName = (TextView)popupView.findViewById(R.id.module_name);
+            TextView moduleName = (TextView)pView.findViewById(R.id.module_name);
             moduleName.setText(title);
 
 
-            ListView moduleInfo = (ListView)popupView.findViewById(R.id.module_infos);
+            ListView moduleInfo = (ListView)pView.findViewById(R.id.module_infos);
             JSONArray activities = result.getJSONArray("activites");
 
             activitiesArrayList.clear();
@@ -221,21 +248,11 @@ public class ModulesActivity extends AbstractActivity {
                     activitiesAdapter.notifyDataSetChanged();
                 }
             }
-
-
-            Button btnDismiss = (Button) popupView.findViewById(R.id.dismiss);
-            btnDismiss.setOnClickListener(new Button.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    popupWindow.dismiss();
-                }
-            });
-
-            popupWindow.showAtLocation(popupView, Gravity.RIGHT, Gravity.CENTER, Gravity.CENTER);
+            showProgress(false);
 
         }
         catch (JSONException e) {
+            showProgress(false);
             e.printStackTrace();
         }
     }
@@ -311,5 +328,38 @@ public class ModulesActivity extends AbstractActivity {
         actionBar.setTitle(mTitle);
     }
 
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
 
 }

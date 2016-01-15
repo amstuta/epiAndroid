@@ -6,7 +6,21 @@
     android:layout_height="wrap_content"
     android:minWidth="200dp"
     android:id="@string/popup_module"
-    android:background="#3399CC">
+    android:background="#3399CC" >
+
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_form"
+        android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
@@ -16,7 +30,7 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
         android:id="@+id/module_infos"
         android:textColor="#FFFFFF" />
 
@@ -26,5 +40,7 @@
         android:layout_height="wrap_content"
         android:text="Quit"
         android:textColor="#FFFFFF" />
+
+    </LinearLayout>
 
 </LinearLayout>
