@@ -15,6 +15,11 @@
         android:title="Home" />
 
     <item
+        android:id="@+id/action_activities"
+        app:showAsAction="always"
+        android:title="@string/title_section6"/>
+
+    <item
         android:id="@+id/action_modules"
         android:icon="@drawable/ic_action_modules"
         android:title="Modules"

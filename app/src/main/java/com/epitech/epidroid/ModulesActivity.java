@@ -302,19 +302,24 @@ public class ModulesActivity extends AbstractActivity {
                 startActivity(i);
                 break;
             case 3:
+                mTitle = getString(R.string.title_section6);
+                Intent intent = new Intent(getApplicationContext(), ActivitiesActivity.class);
+                startActivity(intent);
+                break;
+            case 4:
                 mTitle = getString(R.string.title_section2);
                 Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
                 startActivity(inte);
                 break;
-            case 4:
+            case 5:
                 mTitle = getString(R.string.title_section3);
                 break;
-            case 5:
+            case 6:
                 mTitle = getString(R.string.title_section4);
                 Intent inten = new Intent(getApplicationContext(), ProjectsActivity.class);
                 startActivity(inten);
                 break;
-            case 6:
+            case 7:
                 mTitle = getString(R.string.title_section5);
                 Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
                 startActivity(in);

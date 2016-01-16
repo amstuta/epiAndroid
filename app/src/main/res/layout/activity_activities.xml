@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.epitech.epidroid.ActivitiesActivity"
+    android:id="@+id/drawer_layout">
+
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/container"
+       android:orientation="vertical">
+
+       <ListView
+           android:layout_width="wrap_content"
+           android:layout_height="200dp"
+           android:clickable="true"
+           android:id="@+id/list_activities" />
+
+   </LinearLayout>
+
+    <fragment
+        android:id="@+id/navigation_drawer"
+        android:name="com.epitech.epidroid.NavigationDrawerFragment"
+        android:layout_width="@dimen/navigation_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        tools:layout="@layout/drawer_projects" />
+
+</android.support.v4.widget.DrawerLayout>

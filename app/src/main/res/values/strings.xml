@@ -79,12 +79,16 @@
     <string name="activity_title">acti_title</string>
     <string name="proj">proj</string>
     <string name="acti_type">type_acti_code</string>
-    <string name="title_section0"/>
+    <string name="board">board</string>
+    <string name="activites">activites</string>
+
+    <string name="title_section0" />
     <string name="title_section1">Home</string>
     <string name="title_section2">Planning</string>
     <string name="title_section3">Modules</string>
     <string name="title_section4">Projects</string>
     <string name="title_section5">Log out</string>
+    <string name="title_section6">Activities</string>
 
     <string name="registered">registered</string>
     <string name="can_register">module_available</string>
@@ -96,5 +100,6 @@
 
     <string name="action_example">Example action</string>
     <string name="response">response</string>
+    <string name="title_activity_activities">Activities</string>
 
 </resources>
