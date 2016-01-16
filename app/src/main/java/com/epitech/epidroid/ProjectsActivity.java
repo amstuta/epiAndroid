@@ -57,7 +57,6 @@ public class ProjectsActivity extends AbstractActivity {
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
@@ -81,10 +80,17 @@ public class ProjectsActivity extends AbstractActivity {
         if (response == null)
             return;
         try {
-            final JSONArray projs = response.getJSONArray(getString(R.string.response));
-            for(int i = 0; i < projs.length(); ++i) {
-                if (projs.getJSONObject(i).getString(getString(R.string.acti_type)).equals(getString(R.string.proj))) {
-                    projList.add(projs.getJSONObject(i).getString(getString(R.string.activity_title)));
+            JSONArray projs = response.getJSONArray(getString(R.string.response));
+            final JSONArray cleanProjs = new JSONArray();
+
+            for (int i=0; i < projs.length(); ++i) {
+                if (projs.getJSONObject(i).getString(getString(R.string.acti_type)).equals(getString(R.string.proj)))
+                    cleanProjs.put(projs.getJSONObject(i));
+            }
+
+            for(int i = 0; i < cleanProjs.length(); ++i) {
+                if (cleanProjs.getJSONObject(i).getString(getString(R.string.acti_type)).equals(getString(R.string.proj))) {
+                    projList.add(cleanProjs.getJSONObject(i).getString(getString(R.string.activity_title)));
                     projAdapter.notifyDataSetChanged();
                 }
             }
@@ -96,7 +102,7 @@ public class ProjectsActivity extends AbstractActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                     try {
-                        final JSONObject clicked = projs.getJSONObject(position);
+                        final JSONObject clicked = cleanProjs.getJSONObject(position);
                         final int registered = clicked.getInt(getString(R.string.registered));
 
                         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
