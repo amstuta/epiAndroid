@@ -1,7 +1,14 @@
 <resources>
     <string name="app_name">EpiDroid</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Activities titles -->
     <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_activities">Activities</string>
+    <string name="title_activity_modules">Modules</string>
+    <string name="title_activity_calendar">Calendar</string>
+    <string name="title_activity_projects">Projects</string>
+    <string name="title_activity_disconnect">Disconnect</string>
 
     <!-- Strings related to login -->
     <string name="prompt_login">Login</string>
@@ -67,11 +74,8 @@
     <string name="ns_stat_active">active</string>
     <string name="credits">credits</string>
     <string name="gpa">gpa</string>
-    <string name="title_activity_modules">ModulesActivity</string>
-    <string name="title_activity_calendar">CalendarActivity</string>
     <string name="planning_start">start</string>
     <string name="planning_end">end</string>
-    <string name="title_activity_projects">ProjectsActivity</string>
     <string name="spinner_title">Semesters</string>
     <string name="modules_title">Select a semester</string>
     <string name="semester">semester</string>
@@ -81,25 +85,22 @@
     <string name="acti_type">type_acti_code</string>
     <string name="board">board</string>
     <string name="activites">activites</string>
-
-    <string name="title_section0" />
-    <string name="title_section1">Home</string>
-    <string name="title_section2">Planning</string>
-    <string name="title_section3">Modules</string>
-    <string name="title_section4">Projects</string>
-    <string name="title_section5">Log out</string>
-    <string name="title_section6">Activities</string>
-
     <string name="registered">registered</string>
     <string name="can_register">module_available</string>
     <string name="grade">student_grade</string>
     <string name="dispGrade">Grade: </string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_example">Example action</string>
     <string name="response">response</string>
-    <string name="title_activity_activities">Activities</string>
+
+    <!-- Titles menu sections -->
+    <string name="title_section0" />
+    <string name="title_section1">Home</string>
+    <string name="title_section2">Calendar</string>
+    <string name="title_section3">Modules</string>
+    <string name="title_section4">Projects</string>
+    <string name="title_section5">Log out</string>
+    <string name="title_section6">Activities</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 </resources>

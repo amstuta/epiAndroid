@@ -35,7 +35,7 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".DisconnectActivity"
-            android:label="Disconnect" />
+            android:label="@string/title_activity_disconnect" />
         <activity
             android:name=".ModulesActivity"
             android:label="@string/title_activity_modules" />
