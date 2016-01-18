@@ -47,7 +47,10 @@
             android:label="@string/title_activity_projects" />
         <activity
             android:name=".YearbookActivity"
-            android:label="@string/title_activity_yearbook"></activity>
+            android:label="@string/title_activity_yearbook" />
+        <activity
+            android:name=".RegisterTokenActivity"
+            android:label="@string/title_activity_register_token"></activity>
     </application>
 
 </manifest>

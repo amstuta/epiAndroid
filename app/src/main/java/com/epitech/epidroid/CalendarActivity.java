@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -32,6 +33,7 @@ public class CalendarActivity extends AbstractActivity {
     private ArrayList<String>       activitiesList = new ArrayList<String>();
     private CharSequence            mTitle;
     private String                  chosenDate;
+    private JSONArray               activitiesObjects = new JSONArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class CalendarActivity extends AbstractActivity {
 
         NavigationDrawerFragment mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout)findViewById(R.id.drawer_layout));
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -97,6 +99,7 @@ public class CalendarActivity extends AbstractActivity {
         Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
         TextView date = (TextView)popupView.findViewById(R.id.date);
         ListView acts = (ListView)popupView.findViewById(R.id.activities);
+        JSONArray activities;
 
         activitiesList.clear();
         btnDismiss.setOnClickListener(new Button.OnClickListener() {
@@ -107,20 +110,39 @@ public class CalendarActivity extends AbstractActivity {
         });
         date.setText(chosenDate);
         acts.setAdapter(activitiesAdapter);
+
         try {
-            JSONArray activities = result.getJSONArray(getString(R.string.response));
+            activities = result.getJSONArray(getString(R.string.response));
 
             for (int i=0; i < activities.length(); ++i) {
 
                 if (activities.getJSONObject(i).getBoolean(getString(R.string.can_register))) {
                     activitiesList.add(activities.getJSONObject(i).getString(getString(R.string.activity_title)));
-                    activitiesAdapter.notifyDataSetChanged();
+                    activitiesObjects.put(activities.getJSONObject(i));
                 }
             }
+            activitiesAdapter.notifyDataSetChanged();
         }
         catch (JSONException e) {
             e.printStackTrace();
+            return;
         }
+
+        acts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    JSONObject act = activitiesObjects.getJSONObject(position);
+                    Intent intent = new Intent(getApplicationContext(), RegisterTokenActivity.class);
+
+                    appContext.activity = act;
+                    startActivity(intent);
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         popupWindow.showAtLocation(popupView, Gravity.CENTER, Gravity.CENTER, Gravity.CENTER);
 

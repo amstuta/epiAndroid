@@ -45,10 +45,12 @@
     <string name="domain_planning">planning</string>
     <string name="domain_projects">projects</string>
     <string name="domain_project">project</string>
+    <string name="domain_event">event</string>
     <string name="scolarYear">scolaryear</string>
     <string name="codeModule">codemodule</string>
     <string name="codeInstance">codeinstance</string>
     <string name="codeActivity">codeacti</string>
+    <string name="title_module">titlemodule</string>
 
     <!-- Functions & request strings -->
     <string name="callback_images">imageCallback</string>
@@ -90,6 +92,7 @@
     <string name="dispGrade">Grade: </string>
     <string name="action_example">Example action</string>
     <string name="response">response</string>
+    <string name="activity">activity</string>
 
     <!-- Titles menu sections -->
     <string name="title_section0" />
@@ -102,5 +105,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_yearbook">Yearbook</string>
+    <string name="title_activity_register_token">Activity</string>
+
+    <!-- Buttons -->
+    <string name="register">register</string>
+    <string name="token_button">enter a token</string>
+    <string name="return_button">return</string>
 
 </resources>
