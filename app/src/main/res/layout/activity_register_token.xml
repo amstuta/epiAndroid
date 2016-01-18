@@ -17,6 +17,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/activity_title"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_registered" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

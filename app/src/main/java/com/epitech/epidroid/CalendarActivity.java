@@ -102,6 +102,7 @@ public class CalendarActivity extends AbstractActivity {
         JSONArray activities;
 
         activitiesList.clear();
+        activitiesObjects = new JSONArray();
         btnDismiss.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {

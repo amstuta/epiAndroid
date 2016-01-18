@@ -50,6 +50,7 @@
     <string name="codeModule">codemodule</string>
     <string name="codeInstance">codeinstance</string>
     <string name="codeActivity">codeacti</string>
+    <string name="codeEvent">codeevent</string>
     <string name="title_module">titlemodule</string>
 
     <!-- Functions & request strings -->
@@ -108,8 +109,8 @@
     <string name="title_activity_register_token">Activity</string>
 
     <!-- Buttons -->
-    <string name="register">register</string>
-    <string name="token_button">enter a token</string>
-    <string name="return_button">return</string>
+    <string name="register">Register</string>
+    <string name="token_button">Validate token</string>
+    <string name="return_button">Return</string>
 
 </resources>

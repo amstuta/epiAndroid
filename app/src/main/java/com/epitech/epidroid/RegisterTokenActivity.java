@@ -2,6 +2,8 @@ package com.epitech.epidroid;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,22 +32,41 @@ public class RegisterTokenActivity extends ActionBarActivity {
 
         TextView title = (TextView)findViewById(R.id.activity_title);
         TextView module = (TextView)findViewById(R.id.activity_module);
+        TextView registered = (TextView)findViewById(R.id.activity_registered);
 
         try {
             title.setText(activity.getString(getString(R.string.activity_title)));
             module.setText(activity.getString(getString(R.string.title_module)));
+            registered.setText(activity.getString("event_registered"));
         }
         catch (JSONException e) {
             e.printStackTrace();
             finish();
         }
+
+        Button ret = (Button)findViewById(R.id.return_button);
+        Button reg = (Button)findViewById(R.id.register_button);
+        // TODO: set a unregister si registered
+
+        ret.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        reg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerToActivity();
+            }
+        });
     }
 
-/*
-    private void getActivity() {
+
+    private void registerToActivity() {
         HashMap<String, String> netOpts = new HashMap<String, String>();
         HashMap<String, String> args = new HashMap<String, String>();
-        JSONObject activity = appContext.activity;
         RequestAPI reqHandler = new RequestAPI();
 
         netOpts.put(getString(R.string.domain), getString(R.string.domain_event));
@@ -54,16 +75,22 @@ public class RegisterTokenActivity extends ActionBarActivity {
 
         try {
             args.put(getString(R.string.token), appContext.token);
-            args.put(getString(R.string.scolarYear), activity.getString());
+            args.put(getString(R.string.scolarYear), activity.getString(getString(R.string.scolarYear)));
+            args.put(getString(R.string.codeModule), activity.getString(getString(R.string.codeModule)));
+            args.put(getString(R.string.codeInstance), activity.getString(getString(R.string.codeInstance)));
+            args.put(getString(R.string.codeActivity), activity.getString(getString(R.string.codeActivity)));
+            args.put(getString(R.string.codeEvent), activity.getString(getString(R.string.codeEvent)));
         }
         catch (JSONException e) {
             e.printStackTrace();
+            return;
         }
+
+        Toast.makeText(getApplicationContext(), "Registered succesfully", Toast.LENGTH_SHORT).show();
+        reqHandler.execute(this, netOpts, args);
     }
 
     public void requestCallback(JSONObject result) {
 
     }
-    */
-
 }
