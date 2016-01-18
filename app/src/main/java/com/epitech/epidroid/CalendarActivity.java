@@ -127,15 +127,6 @@ public class CalendarActivity extends AbstractActivity {
     }
 
 
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
-    }
-
-
     public void onSectionAttached(int number) {
         switch (number) {
             case 2:
@@ -168,13 +159,4 @@ public class CalendarActivity extends AbstractActivity {
                 break;
         }
     }
-
-    public void restoreActionBar() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(android.support.v7.app.ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }
-
-
 }

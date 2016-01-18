@@ -55,14 +55,6 @@ public class ProjectsActivity extends AbstractActivity {
         retrieveProjects();
     }
 
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
-    }
-
     private void retrieveProjects(){
         HashMap<String, String> netOptions = new HashMap<String, String>();
         HashMap<String, String> args = new HashMap<String, String>();
@@ -244,12 +236,4 @@ public class ProjectsActivity extends AbstractActivity {
 
         }
     }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }
-
 }

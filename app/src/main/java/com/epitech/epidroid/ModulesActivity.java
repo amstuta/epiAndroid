@@ -286,14 +286,6 @@ public class ModulesActivity extends AbstractActivity {
     }
 
 
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
-    }
-
     public void onSectionAttached(int number) {
         switch (number) {
             case 2:
@@ -325,14 +317,6 @@ public class ModulesActivity extends AbstractActivity {
                 startActivity(in);
                 break;
         }
-    }
-
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
     }
 
 
