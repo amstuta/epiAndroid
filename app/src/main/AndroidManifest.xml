@@ -46,8 +46,8 @@
             android:name=".ProjectsActivity"
             android:label="@string/title_activity_projects" />
         <activity
-            android:name=".ActivitiesActivity"
-            android:label="@string/title_activity_activities"></activity>
+            android:name=".YearbookActivity"
+            android:label="@string/title_activity_yearbook"></activity>
     </application>
 
 </manifest>

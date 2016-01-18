@@ -171,7 +171,7 @@ public class MainActivity extends AbstractActivity {
                 break;
             case 3:
                 mTitle = getString(R.string.title_section6);
-                Intent intent = new Intent(getApplicationContext(), ActivitiesActivity.class);
+                Intent intent = new Intent(getApplicationContext(), YearbookActivity.class);
                 startActivity(intent);
                 break;
             case 4:

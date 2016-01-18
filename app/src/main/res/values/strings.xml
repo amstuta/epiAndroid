@@ -4,7 +4,6 @@
 
     <!-- Activities titles -->
     <string name="title_activity_login">Sign in</string>
-    <string name="title_activity_activities">Activities</string>
     <string name="title_activity_modules">Modules</string>
     <string name="title_activity_calendar">Calendar</string>
     <string name="title_activity_projects">Projects</string>
@@ -99,8 +98,9 @@
     <string name="title_section3">Modules</string>
     <string name="title_section4">Projects</string>
     <string name="title_section5">Log out</string>
-    <string name="title_section6">Activities</string>
+    <string name="title_section6">Yearbook</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_yearbook">Yearbook</string>
 
 </resources>

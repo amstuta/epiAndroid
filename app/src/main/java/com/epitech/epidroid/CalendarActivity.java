@@ -145,7 +145,7 @@ public class CalendarActivity extends AbstractActivity {
                 break;
             case 3:
                 mTitle = getString(R.string.title_section6);
-                Intent inte = new Intent(getApplicationContext(), ActivitiesActivity.class);
+                Intent inte = new Intent(getApplicationContext(), YearbookActivity.class);
                 startActivity(inte);
                 break;
             case 4:
