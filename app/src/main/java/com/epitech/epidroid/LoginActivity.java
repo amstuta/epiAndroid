@@ -31,7 +31,6 @@ public class LoginActivity extends ActionBarActivity {
     private View mProgressView;
     private View mLoginFormView;
     private String token;
-    private String projectsList = null;
     private ArrayList<HashMap<String, String>> projects;
 
 

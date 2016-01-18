@@ -46,12 +46,14 @@
     <string name="domain_projects">projects</string>
     <string name="domain_project">project</string>
     <string name="domain_event">event</string>
+    <string name="domain_token">token</string>
     <string name="scolarYear">scolaryear</string>
     <string name="codeModule">codemodule</string>
     <string name="codeInstance">codeinstance</string>
     <string name="codeActivity">codeacti</string>
     <string name="codeEvent">codeevent</string>
     <string name="title_module">titlemodule</string>
+    <string name="event_registered">event_registered</string>
 
     <!-- Functions & request strings -->
     <string name="callback_images">imageCallback</string>
@@ -59,6 +61,7 @@
     <string name="callback_user">userCallback</string>
     <string name="callback_modules">modulesCallback</string>
     <string name="callback_project">projectCallback</string>
+    <string name="callback_token">callbackToken</string>
     <string name="callback">callback</string>
     <string name="request_method">requestMethod</string>
     <string name="request_method_post">POST</string>
@@ -94,6 +97,9 @@
     <string name="action_example">Example action</string>
     <string name="response">response</string>
     <string name="activity">activity</string>
+    <string name="tokenCode">tokenvalidationcode</string>
+    <string name="registered_success">Registered succesfully</string>
+    <string name="token_validated">Token validated</string>
 
     <!-- Titles menu sections -->
     <string name="title_section0" />
@@ -110,7 +116,11 @@
 
     <!-- Buttons -->
     <string name="register">Register</string>
+    <string name="unregister">Unregister</string>
     <string name="token_button">Validate token</string>
     <string name="return_button">Return</string>
+    <string name="validate">Validate</string>
+    <string name="close">Close</string>
+    <string name="hint_token">Token</string>
 
 </resources>

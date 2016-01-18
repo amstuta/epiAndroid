@@ -74,6 +74,10 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
                 while ((line = reader.readLine()) != null) {
                     fResult += line;
                 }
+
+                if (fResult.length() == 0)
+                    return true;
+
                 requestResult = new JSONObject(fResult);
             }
         }
@@ -83,9 +87,6 @@ public class RequestAPI extends AsyncTask<Object, Void, Boolean> {
                 JSONArray res = new JSONArray(fResult);
                 JSONObject finale = new JSONObject();
                 finale.put(((Activity)callback).getString(R.string.response), res);
-                System.out.println(res);
-
-                //JSONObject obj = res.getJSONObject(0);
 
                 requestResult = finale;
             }

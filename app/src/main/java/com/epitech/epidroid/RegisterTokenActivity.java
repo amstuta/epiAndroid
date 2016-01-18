@@ -2,8 +2,14 @@ package com.epitech.epidroid;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,8 +20,9 @@ import java.util.HashMap;
 
 public class RegisterTokenActivity extends ActionBarActivity {
 
-    private EpiContext appContext;
-    private JSONObject activity;
+    private EpiContext  appContext;
+    private JSONObject  activity;
+    private Boolean     registered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,21 +39,27 @@ public class RegisterTokenActivity extends ActionBarActivity {
 
         TextView title = (TextView)findViewById(R.id.activity_title);
         TextView module = (TextView)findViewById(R.id.activity_module);
-        TextView registered = (TextView)findViewById(R.id.activity_registered);
+        Button reg = (Button)findViewById(R.id.register_button);
+        Button ret = (Button)findViewById(R.id.return_button);
+        Button tok = (Button)findViewById(R.id.token_button);
 
         try {
             title.setText(activity.getString(getString(R.string.activity_title)));
             module.setText(activity.getString(getString(R.string.title_module)));
-            registered.setText(activity.getString("event_registered"));
+
+            String regist = activity.getString(getString(R.string.event_registered));
+            if (!regist.equals("false")) {
+                registered = true;
+                reg.setText(getString(R.string.unregister));
+            }
+            else
+                reg.setText(getString(R.string.register));
         }
         catch (JSONException e) {
             e.printStackTrace();
             finish();
         }
 
-        Button ret = (Button)findViewById(R.id.return_button);
-        Button reg = (Button)findViewById(R.id.register_button);
-        // TODO: set a unregister si registered
 
         ret.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +74,45 @@ public class RegisterTokenActivity extends ActionBarActivity {
                 registerToActivity();
             }
         });
+
+        tok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = layoutInflater.inflate(R.layout.popup_token, null);
+                final PopupWindow popupWindow = new PopupWindow(popupView,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                Button validate = (Button) popupView.findViewById(R.id.validate_token);
+                Button close = (Button) popupView.findViewById(R.id.dismiss);
+                final EditText tokenCode = (EditText) popupView.findViewById(R.id.token_code);
+
+                tokenCode.requestFocus();
+
+                validate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String token = tokenCode.getText().toString();
+
+                        if (TextUtils.isEmpty(token) || token.length() != 8) {
+                            Toast.makeText(getApplicationContext(), getString(R.string.error_field_required), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        validateToken(token);
+                    }
+                });
+
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+
+                popupWindow.showAtLocation(popupView, Gravity.CENTER, Gravity.CENTER, Gravity.CENTER);
+            }
+        });
     }
 
 
@@ -70,7 +122,10 @@ public class RegisterTokenActivity extends ActionBarActivity {
         RequestAPI reqHandler = new RequestAPI();
 
         netOpts.put(getString(R.string.domain), getString(R.string.domain_event));
-        netOpts.put(getString(R.string.request_method), getString(R.string.request_method_get));
+        if (registered)
+            netOpts.put(getString(R.string.request_method), getString(R.string.request_method_get));
+        else
+            netOpts.put(getString(R.string.request_method), getString(R.string.request_method_delete));
         netOpts.put(getString(R.string.callback), getString(R.string.callback_info));
 
         try {
@@ -86,11 +141,38 @@ public class RegisterTokenActivity extends ActionBarActivity {
             return;
         }
 
-        Toast.makeText(getApplicationContext(), "Registered succesfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.registered_success), Toast.LENGTH_SHORT).show();
         reqHandler.execute(this, netOpts, args);
     }
 
-    public void requestCallback(JSONObject result) {
 
+    private void validateToken(String token) {
+        HashMap<String, String> netOpts = new HashMap<String, String>();
+        HashMap<String, String> args = new HashMap<String, String>();
+        RequestAPI reqHandler = new RequestAPI();
+
+        netOpts.put(getString(R.string.domain), getString(R.string.domain_token));
+        netOpts.put(getString(R.string.request_method), getString(R.string.request_method_post));
+        netOpts.put(getString(R.string.callback), getString(R.string.callback_info));
+
+        try {
+            args.put(getString(R.string.token), appContext.token);
+            args.put(getString(R.string.scolarYear), activity.getString(getString(R.string.scolarYear)));
+            args.put(getString(R.string.codeModule), activity.getString(getString(R.string.codeModule)));
+            args.put(getString(R.string.codeInstance), activity.getString(getString(R.string.codeInstance)));
+            args.put(getString(R.string.codeActivity), activity.getString(getString(R.string.codeActivity)));
+            args.put(getString(R.string.codeEvent), activity.getString(getString(R.string.codeEvent)));
+            args.put(getString(R.string.tokenCode), token);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+        Toast.makeText(getApplicationContext(), getString(R.string.token_validated), Toast.LENGTH_SHORT).show();
+
+        reqHandler.execute(this, netOpts, args);
     }
+
+
+    public void requestCallback(JSONObject result) {}
 }
