@@ -46,6 +46,9 @@ public class ModulesActivity extends AbstractActivity {
     private View                    pView;
 
 
+    /**
+     * Loads the UI components and makes the request to get the list of modules.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +81,12 @@ public class ModulesActivity extends AbstractActivity {
     }
 
 
+    /**
+     * Callback for the modules request.
+     * Tries to get the Modules list in "result" {@link JsonObject},
+     * then displays theses modules and set the click listener on the list.
+     * @param  result the result of the request in JSON format
+     */
     public void modulesCallback(JsonObject result) {
 
         if (result == null) {
@@ -91,7 +100,7 @@ public class ModulesActivity extends AbstractActivity {
 
             Spinner msgs = (Spinner)findViewById(R.id.modules);
             ListView lst = (ListView)findViewById(R.id.modules_title);
-            final ArrayList<JsonObject>[] modules = getDick(mods);
+            final ArrayList<JsonObject>[] modules = getSortedModules(mods);
 
             msgs.setAdapter(vAdapter);
             lst.setAdapter(mAdapter);
@@ -163,7 +172,14 @@ public class ModulesActivity extends AbstractActivity {
     }
 
 
-    private void executeRequestModule(String scolarYear, String codeModule, String codeInstance) {
+    /**
+     * Makes the request to get informations on the clicked module,
+     * and displays a loading bar when executing request.
+     * @param scolarYear The scholar year of the selected module
+     * @param codeModule Code of the selected module
+     * @param codeInstance Code of the instance of the selected module
+     */
+    protected void executeRequestModule(String scolarYear, String codeModule, String codeInstance) {
         LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.popup_module, null);
         final PopupWindow popupWindow = new PopupWindow(popupView,
@@ -204,6 +220,12 @@ public class ModulesActivity extends AbstractActivity {
     }
 
 
+    /**
+     * Callback for the module informations request.
+     * Gets the title, grade and projects for the selected module.
+     * If possible, it displays the projects marks too.
+     * @param  result the result of the request in JSON format
+     */
     public void requestCallback(JsonObject result) {
         if (result == null) {
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
@@ -220,20 +242,20 @@ public class ModulesActivity extends AbstractActivity {
             moduleGrade.setText(getString(R.string.dispGrade) + grade);
 
             ListView moduleInfo = (ListView)pView.findViewById(R.id.module_infos);
-            JsonArray activities = result.getAsJsonArray(/*"activites"*/ getString(R.string.activites));
+            JsonArray activities = result.getAsJsonArray(getString(R.string.activites));
 
             activitiesArrayList.clear();
             moduleInfo.setAdapter(activitiesAdapter);
 
             for (int i=0; i < activities.size(); ++i) {
                 JsonObject tmp = activities.get(i).getAsJsonObject();
-                Boolean isProject = tmp.get(/*"is_projet"*/ getString(R.string.isProject)).getAsBoolean();
+                Boolean isProject = tmp.get(getString(R.string.isProject)).getAsBoolean();
 
                 if (isProject) {
-                    String infos = tmp.get(getString(R.string.title)).getAsString() + "          ";
+                    String infos = tmp.get(getString(R.string.title)).getAsString();
 
-                    if (!tmp.get(/*"note"*/ getString(R.string.mark)).isJsonNull())
-                        infos += tmp.get(/*"note"*/ getString(R.string.mark)).getAsString();
+                    if (!tmp.get(getString(R.string.mark)).isJsonNull())
+                        infos += "          " + tmp.get(getString(R.string.mark)).getAsString();
 
                     activitiesArrayList.add(infos);
                 }
@@ -248,7 +270,7 @@ public class ModulesActivity extends AbstractActivity {
     }
 
 
-    private ArrayList<JsonObject>[] getDick(JsonArray mods) {
+    private ArrayList<JsonObject>[] getSortedModules(JsonArray mods) {
         if (mods == null)
             return null;
 

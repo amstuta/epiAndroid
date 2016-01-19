@@ -71,6 +71,12 @@ public class ProjectsActivity extends AbstractActivity {
     }
 
 
+    /**
+     * Callback for the projects getting request.
+     * Filters the projects that have the flag `is_proj` and displays them.
+     * Sets events handlers for the projects list.
+     * @param response The request response in JSON format
+     */
     public void requestCallback(JsonArray response) {
 
         if (response == null)

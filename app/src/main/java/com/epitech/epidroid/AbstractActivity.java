@@ -26,7 +26,11 @@ public abstract class AbstractActivity extends ActionBarActivity implements Navi
     }
 
 
-    public void onSectionAttached(int number) {
+    /**
+     * Called when an item is clicked on the navigation drawer.
+     * @param  number The index of the selected item.
+     */
+    protected void onSectionAttached(int number) {
         switch (number) {
             case 2:
                 mTitle = getString(R.string.title_section1);

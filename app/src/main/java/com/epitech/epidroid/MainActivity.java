@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AbstractActivity {
 
-    //private ImageRequest            imgHandler = new ImageRequest();
     private EpiContext              appContext;
     private ArrayAdapter<String>    adapter;
     private ArrayList<String>       arrayList = new ArrayList<String>();
@@ -58,6 +57,12 @@ public class MainActivity extends AbstractActivity {
         }
     }
 
+
+    /**
+     * Callback for the user informations request.
+     * Gets the profile picture URL and tries to display it.
+     * @param  result The result of the request in JSON format
+     */
     public void requestCallback(JsonObject result) {
 
         if (result == null)
@@ -123,6 +128,11 @@ public class MainActivity extends AbstractActivity {
     }
 
 
+    /**
+     * Callback for the user informations request.
+     * Displays the user's credits, gpa for the bachelor cycle and active log time.
+     * @param  result The result of the request in JSON format
+     */
     public void userCallback(JsonObject result) {
         if (result == null)
             return;

@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,11 +22,9 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class YearbookActivity extends AbstractActivity implements AdapterView.OnItemSelectedListener,
         AdapterView.OnItemClickListener {
@@ -52,10 +47,6 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
     private View mProgressView;
     private PopupWindow pWIndow;
     private View pView;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
 
 
@@ -86,12 +77,12 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
         vArrayList.add(getString(R.string.tek3));
         vAdapter.notifyDataSetChanged();
         msgs.setOnItemSelectedListener(this);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 
+    /*
     public void onSectionAttached(int number) {
         switch (number) {
             case 2:
@@ -124,7 +115,14 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
                 break;
         }
     }
+    */
 
+
+    /**
+     * Callback for the yearbook getting request.
+     * Displays the received list of students, and calls `onItemSelected` if there are more.
+     * @param result The request response in JSON format
+     */
     public void yearbookCallback(JsonObject result) {
         try {
 
@@ -154,6 +152,13 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
         }
     }
 
+
+    /**
+     * Called when an item is selected in the spinner.
+     * Makes the request to get a list of students fot the selected promotion.
+     * Displays a progress bar too.
+     * @param position Index of the selected item.
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Spinner msgs = (Spinner) findViewById(R.id.yearbook_promo);
@@ -191,11 +196,17 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
         });
     }
 
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
+    /**
+     * Called when the user clicked on a student's login.
+     * Makes the request to get the selected student's informations.
+     * @param position Index of the selected login
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
@@ -205,6 +216,7 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
         }
     }
 
+    /*
     @Override
     public void onStart() {
         super.onStart();
@@ -244,4 +256,5 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
+    */
 }

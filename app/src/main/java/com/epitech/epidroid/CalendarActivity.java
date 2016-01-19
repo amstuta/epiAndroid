@@ -33,12 +33,14 @@ import java.util.HashMap;
 
 public class CalendarActivity extends AbstractActivity {
 
+
     private EpiContext              appContext = null;
     private ArrayAdapter<String>    activitiesAdapter;
     private ArrayList<String>       activitiesList = new ArrayList<String>();
     private CharSequence            mTitle;
     private String                  chosenDate;
     private JsonArray               activitiesObjects = new JsonArray();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,11 @@ public class CalendarActivity extends AbstractActivity {
     }
 
 
+    /**
+     * Callback for the calendar request : when the user clicks on a date.
+     * Opens a popup window to display activities for the selected date.
+     * @param  result The result of the request in JSON format, containing the list of available activities.
+     */
     public void requestCallback(JsonArray result) {
 
         if (result == null) {
