@@ -105,6 +105,8 @@
     <string name="tokenCode">tokenvalidationcode</string>
     <string name="registered_success">Registered succesfully</string>
     <string name="token_validated">Token validated</string>
+    <string name="isProject">is_projet</string>
+    <string name="mark">note</string>
 
     <!-- Titles menu sections -->
     <string name="title_section0" />

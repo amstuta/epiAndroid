@@ -220,20 +220,20 @@ public class ModulesActivity extends AbstractActivity {
             moduleGrade.setText(getString(R.string.dispGrade) + grade);
 
             ListView moduleInfo = (ListView)pView.findViewById(R.id.module_infos);
-            JsonArray activities = result.getAsJsonArray("activites");
+            JsonArray activities = result.getAsJsonArray(/*"activites"*/ getString(R.string.activites));
 
             activitiesArrayList.clear();
             moduleInfo.setAdapter(activitiesAdapter);
 
             for (int i=0; i < activities.size(); ++i) {
                 JsonObject tmp = activities.get(i).getAsJsonObject();
-                Boolean isProject = tmp.get("is_projet").getAsBoolean();
+                Boolean isProject = tmp.get(/*"is_projet"*/ getString(R.string.isProject)).getAsBoolean();
 
                 if (isProject) {
                     String infos = tmp.get(getString(R.string.title)).getAsString() + "          ";
 
-                    if (!tmp.get("note").isJsonNull())
-                        infos += tmp.get("note").getAsString();
+                    if (!tmp.get(/*"note"*/ getString(R.string.mark)).isJsonNull())
+                        infos += tmp.get(/*"note"*/ getString(R.string.mark)).getAsString();
 
                     activitiesArrayList.add(infos);
                 }

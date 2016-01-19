@@ -141,6 +141,7 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
 
+
     private boolean isEmailValid(String email) {
         return email.contains("_");
     }
