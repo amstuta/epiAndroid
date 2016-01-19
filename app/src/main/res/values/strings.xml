@@ -41,6 +41,7 @@
     <string name="domain_login">login</string>
     <string name="domain_user">user</string>
     <string name="domain_modules">modules</string>
+    <string name="domain_yearbook">trombi</string>
     <string name="domain_module">module</string>
     <string name="domain_planning">planning</string>
     <string name="domain_projects">projects</string>
@@ -60,6 +61,7 @@
     <string name="callback_info">requestCallback</string>
     <string name="callback_user">userCallback</string>
     <string name="callback_modules">modulesCallback</string>
+    <string name="callback_yearbook">yearbookCallback</string>
     <string name="callback_project">projectCallback</string>
     <string name="callback_token">callbackToken</string>
     <string name="callback">callback</string>
@@ -97,6 +99,9 @@
     <string name="action_example">Example action</string>
     <string name="response">response</string>
     <string name="activity">activity</string>
+    <string name="yearbook_title">select a promotion</string>
+    <string name="spinner_yearbook">promo</string>
+    <string name="items">items</string>
     <string name="tokenCode">tokenvalidationcode</string>
     <string name="registered_success">Registered succesfully</string>
     <string name="token_validated">Token validated</string>
@@ -119,6 +124,11 @@
     <string name="unregister">Unregister</string>
     <string name="token_button">Validate token</string>
     <string name="return_button">Return</string>
+
+    <!-- promos -->
+    <string name="tek1">tek1</string>
+    <string name="tek2">tek2</string>
+    <string name="tek3">tek3</string>
     <string name="validate">Validate</string>
     <string name="close">Close</string>
     <string name="hint_token">Token</string>

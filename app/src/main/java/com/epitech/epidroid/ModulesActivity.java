@@ -146,8 +146,8 @@ public class ModulesActivity extends AbstractActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    ListView lv = (ListView)findViewById(R.id.modules_title);
-                    String moduleName = (String)(lv.getItemAtPosition(position));
+                    ListView lv = (ListView) findViewById(R.id.modules_title);
+                    String moduleName = (String) (lv.getItemAtPosition(position));
                     ArrayList<JSONObject> sem = modules[selectedSemester];
                     JSONObject selectedModule = sem.get(position);
 
@@ -158,8 +158,7 @@ public class ModulesActivity extends AbstractActivity {
 
                         Toast.makeText(getApplicationContext(), moduleName, Toast.LENGTH_SHORT).show();
                         executeRequestModule(scolarYear, codeModule, codeInstance);
-                    }
-                    catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
