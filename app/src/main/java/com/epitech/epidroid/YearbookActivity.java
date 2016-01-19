@@ -43,11 +43,11 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
     private ProgressDialog load = null;
     private Boolean isLoading = false;
     private HashMap<String, JsonObject> studentInf = null;
-    private View mLoginFormView;
-    private View mProgressView;
-    private PopupWindow pWIndow;
-    private View pView;
-    private GoogleApiClient client;
+    //private View mLoginFormView;
+    //private View mProgressView;
+    //private PopupWindow pWIndow;
+    //private View pView;
+    //private GoogleApiClient client;
 
 
     @Override
@@ -78,44 +78,8 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
         vAdapter.notifyDataSetChanged();
         msgs.setOnItemSelectedListener(this);
 
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        //client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
-
-    /*
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 2:
-                mTitle = getString(R.string.title_section1);
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(i);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section6);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section2);
-                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
-                startActivity(inte);
-                break;
-            case 5:
-                mTitle = getString(R.string.title_section3);
-                Intent intent = new Intent(getApplicationContext(), ModulesActivity.class);
-                startActivity(intent);
-                break;
-            case 6:
-                mTitle = getString(R.string.title_section4);
-                Intent inten = new Intent(getApplicationContext(), ProjectsActivity.class);
-                startActivity(inten);
-                break;
-            case 7:
-                mTitle = getString(R.string.title_section5);
-                Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
-                startActivity(in);
-                break;
-        }
-    }
-    */
 
 
     /**
@@ -199,8 +163,8 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
+
 
     /**
      * Called when the user clicked on a student's login.
@@ -215,46 +179,4 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
             E.printStackTrace();
         }
     }
-
-    /*
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Yearbook Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.epitech.epidroid/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Yearbook Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.epitech.epidroid/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
-    */
 }
