@@ -13,6 +13,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,7 +23,8 @@ import java.util.HashMap;
 public class RegisterTokenActivity extends ActionBarActivity {
 
     private EpiContext  appContext;
-    private JSONObject  activity;
+    //private JSONObject  activity;
+    private JsonObject  activity;
     private Boolean     registered = false;
 
     @Override
@@ -44,10 +47,14 @@ public class RegisterTokenActivity extends ActionBarActivity {
         Button tok = (Button)findViewById(R.id.token_button);
 
         try {
-            title.setText(activity.getString(getString(R.string.activity_title)));
-            module.setText(activity.getString(getString(R.string.title_module)));
+            //title.setText(activity.getString(getString(R.string.activity_title)));
+            //module.setText(activity.getString(getString(R.string.title_module)));
 
-            String regist = activity.getString(getString(R.string.event_registered));
+            title.setText(activity.get(getString(R.string.activity_title)).getAsString());
+            module.setText(activity.get(getString(R.string.title_module)).getAsString());
+
+            //String regist = activity.getString(getString(R.string.event_registered));
+            String regist = activity.get(getString(R.string.event_registered)).getAsString();
             if (!regist.equals("false")) {
                 registered = true;
                 reg.setText(getString(R.string.unregister));
@@ -55,7 +62,7 @@ public class RegisterTokenActivity extends ActionBarActivity {
             else
                 reg.setText(getString(R.string.register));
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             e.printStackTrace();
             finish();
         }
@@ -130,13 +137,13 @@ public class RegisterTokenActivity extends ActionBarActivity {
 
         try {
             args.put(getString(R.string.token), appContext.token);
-            args.put(getString(R.string.scolarYear), activity.getString(getString(R.string.scolarYear)));
-            args.put(getString(R.string.codeModule), activity.getString(getString(R.string.codeModule)));
-            args.put(getString(R.string.codeInstance), activity.getString(getString(R.string.codeInstance)));
-            args.put(getString(R.string.codeActivity), activity.getString(getString(R.string.codeActivity)));
-            args.put(getString(R.string.codeEvent), activity.getString(getString(R.string.codeEvent)));
+            args.put(getString(R.string.scolarYear), activity.get(getString(R.string.scolarYear)).getAsString()); //activity.getString(getString(R.string.scolarYear)));
+            args.put(getString(R.string.codeModule), activity.get(getString(R.string.codeModule)).getAsString()); //activity.getString(getString(R.string.codeModule)));
+            args.put(getString(R.string.codeInstance), activity.get(getString(R.string.codeInstance)).getAsString());//activity.getString(getString(R.string.codeInstance)));
+            args.put(getString(R.string.codeActivity), activity.get(getString(R.string.codeActivity)).getAsString()); //activity.getString(getString(R.string.codeActivity)));
+            args.put(getString(R.string.codeEvent), activity.get(getString(R.string.codeEvent)).getAsString()); //activity.getString(getString(R.string.codeEvent)));
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             e.printStackTrace();
             return;
         }
@@ -157,14 +164,14 @@ public class RegisterTokenActivity extends ActionBarActivity {
 
         try {
             args.put(getString(R.string.token), appContext.token);
-            args.put(getString(R.string.scolarYear), activity.getString(getString(R.string.scolarYear)));
-            args.put(getString(R.string.codeModule), activity.getString(getString(R.string.codeModule)));
-            args.put(getString(R.string.codeInstance), activity.getString(getString(R.string.codeInstance)));
-            args.put(getString(R.string.codeActivity), activity.getString(getString(R.string.codeActivity)));
-            args.put(getString(R.string.codeEvent), activity.getString(getString(R.string.codeEvent)));
+            args.put(getString(R.string.scolarYear), activity.get(getString(R.string.scolarYear)).getAsString());
+            args.put(getString(R.string.codeModule), activity.get(getString(R.string.codeModule)).getAsString());
+            args.put(getString(R.string.codeInstance), activity.get(getString(R.string.codeInstance)).getAsString());
+            args.put(getString(R.string.codeActivity), activity.get(getString(R.string.codeActivity)).getAsString());
+            args.put(getString(R.string.codeEvent), activity.get(getString(R.string.codeEvent)).getAsString());
             args.put(getString(R.string.tokenCode), token);
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             e.printStackTrace();
             return;
         }

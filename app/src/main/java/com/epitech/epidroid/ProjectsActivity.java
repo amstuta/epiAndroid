@@ -201,39 +201,4 @@ public class ProjectsActivity extends AbstractActivity {
 
     public void projectCallback(JSONObject result) {
     }
-
-
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 2:
-                mTitle = getString(R.string.title_section1);
-                Intent inter = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(inter);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section6);
-                Intent intent = new Intent(getApplicationContext(), YearbookActivity.class);
-                startActivity(intent);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section2);
-                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
-                startActivity(inte);
-                break;
-            case 5:
-                mTitle = getString(R.string.title_section3);
-                Intent i = new Intent(getApplicationContext(), ModulesActivity.class);
-                startActivity(i);
-                break;
-            case 6:
-                mTitle = getString(R.string.title_section4);
-                break;
-            case 7:
-                mTitle = getString(R.string.title_section5);
-                Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
-                startActivity(in);
-                break;
-
-        }
-    }
 }

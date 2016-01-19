@@ -29,13 +29,12 @@ import java.util.HashMap;
 
 public class LoginActivity extends ActionBarActivity {
 
-    private RequestAPI mAuthTask = null;
-    private EditText mLoginView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
-    private String token;
-    private ArrayList<HashMap<String, String>> projects;
+
+    private EditText    mLoginView;
+    private EditText    mPasswordView;
+    private View        mProgressView;
+    private View        mLoginFormView;
+    private String      token;
 
 
     @Override
@@ -70,10 +69,6 @@ public class LoginActivity extends ActionBarActivity {
 
 
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         mLoginView.setError(null);
         mPasswordView.setError(null);
 
@@ -125,7 +120,6 @@ public class LoginActivity extends ActionBarActivity {
 
     public void callback(JsonObject result) {
         if (result == null) {
-            mAuthTask = null;
             showProgress(false);
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             return;
@@ -143,7 +137,6 @@ public class LoginActivity extends ActionBarActivity {
             e.printStackTrace();
         }
         finally {
-            mAuthTask = null;
             showProgress(false);
         }
     }

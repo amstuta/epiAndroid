@@ -19,6 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.CalendarView.OnDateChangeListener;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +38,7 @@ public class CalendarActivity extends AbstractActivity {
     private ArrayList<String>       activitiesList = new ArrayList<String>();
     private CharSequence            mTitle;
     private String                  chosenDate;
-    private JSONArray               activitiesObjects = new JSONArray();
+    private JsonArray               activitiesObjects = new JsonArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,31 +64,26 @@ public class CalendarActivity extends AbstractActivity {
                 public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
                     Toast.makeText(getApplicationContext(), day + "/" + month + "/" + year, Toast.LENGTH_LONG).show();
                     chosenDate = "" + year + "-" + (month + 1) + "-" + day;
-                    callAPI();
+
+                    Ion.with(getApplicationContext())
+                    .load(getString(R.string.request_method_get) ,getString(R.string.api_domain) + getString(R.string.domain_planning))
+                    .setBodyParameter(getString(R.string.token), appContext.token)
+                    .setBodyParameter(getString(R.string.planning_start), chosenDate)
+                    .setBodyParameter(getString(R.string.planning_end), chosenDate)
+                    .asJsonArray()
+                    .setCallback(new FutureCallback<JsonArray>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonArray result) {
+                            requestCallback(result);
+                        }
+                    });
                 }
             });
         }
     }
 
 
-    private void callAPI() {
-        RequestAPI reqHandler = new RequestAPI();
-
-        HashMap<String, String> netOpts = new HashMap<String, String>();
-        netOpts.put(getString(R.string.domain), getString(R.string.domain_planning));
-        netOpts.put(getString(R.string.request_method), getString(R.string.request_method_get));
-        netOpts.put(getString(R.string.callback), getString(R.string.callback_info));
-
-        HashMap<String, String> args = new HashMap<String, String>();
-        args.put(getString(R.string.token), appContext.token);
-        args.put(getString(R.string.planning_start), chosenDate);
-        args.put(getString(R.string.planning_end), chosenDate);
-
-        reqHandler.execute(this, netOpts, args);
-    }
-
-
-    public void requestCallback(JSONObject result) {
+    public void requestCallback(JsonArray result) {
 
         if (result == null) {
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
@@ -99,10 +99,10 @@ public class CalendarActivity extends AbstractActivity {
         Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
         TextView date = (TextView)popupView.findViewById(R.id.date);
         ListView acts = (ListView)popupView.findViewById(R.id.activities);
-        JSONArray activities;
 
         activitiesList.clear();
-        activitiesObjects = new JSONArray();
+        activitiesObjects = new JsonArray();
+
         btnDismiss.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,18 +113,18 @@ public class CalendarActivity extends AbstractActivity {
         acts.setAdapter(activitiesAdapter);
 
         try {
-            activities = result.getJSONArray(getString(R.string.response));
+            for (int i = 0; i < result.size(); ++i) {
+                JsonObject tmp = result.get(i).getAsJsonObject();
 
-            for (int i=0; i < activities.length(); ++i) {
-
-                if (activities.getJSONObject(i).getBoolean(getString(R.string.can_register))) {
-                    activitiesList.add(activities.getJSONObject(i).getString(getString(R.string.activity_title)));
-                    activitiesObjects.put(activities.getJSONObject(i));
+                if (tmp.get(getString(R.string.can_register)).getAsBoolean()) {
+                    activitiesList.add(tmp.get(getString(R.string.activity_title)).getAsString());
+                    activitiesObjects.add(tmp);
                 }
             }
             activitiesAdapter.notifyDataSetChanged();
+
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             e.printStackTrace();
             return;
         }
@@ -133,53 +133,18 @@ public class CalendarActivity extends AbstractActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    JSONObject act = activitiesObjects.getJSONObject(position);
+                    JsonObject act = activitiesObjects.get(position).getAsJsonObject();
                     Intent intent = new Intent(getApplicationContext(), RegisterTokenActivity.class);
 
                     appContext.activity = act;
                     startActivity(intent);
                 }
-                catch (JSONException e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
         popupWindow.showAtLocation(popupView, Gravity.CENTER, Gravity.CENTER, Gravity.CENTER);
-
-    }
-
-
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 2:
-                mTitle = getString(R.string.title_section1);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section6);
-                Intent inte = new Intent(getApplicationContext(), YearbookActivity.class);
-                startActivity(inte);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 5:
-                mTitle = getString(R.string.title_section3);
-                Intent i = new Intent(getApplicationContext(), ModulesActivity.class);
-                startActivity(i);
-                break;
-            case 6:
-                mTitle = getString(R.string.title_section4);
-                Intent inten = new Intent(getApplicationContext(), ProjectsActivity.class);
-                startActivity(inten);
-                break;
-            case 7:
-                mTitle = getString(R.string.title_section5);
-                Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
-                startActivity(in);
-                break;
-        }
     }
 }

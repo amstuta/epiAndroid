@@ -3,18 +3,11 @@ package com.epitech.epidroid;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,15 +19,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+
 
 public class ModulesActivity extends AbstractActivity {
 
@@ -74,21 +65,20 @@ public class ModulesActivity extends AbstractActivity {
             finish();
         }
 
-        RequestAPI reqHandler = new RequestAPI();
-
-        HashMap<String, String> netOpts = new HashMap<String, String>();
-        netOpts.put(getString(R.string.domain), getString(R.string.domain_modules));
-        netOpts.put(getString(R.string.request_method), getString(R.string.request_method_get));
-        netOpts.put(getString(R.string.callback), getString(R.string.callback_modules));
-
-        HashMap<String, String> args = new HashMap<String, String>();
-        args.put(getString(R.string.token), appContext.token);
-
-        reqHandler.execute(this, netOpts, args);
+        Ion.with(getApplicationContext())
+        .load(getString(R.string.request_method_get), getString(R.string.api_domain) + getString(R.string.domain_modules))
+        .setBodyParameter(getString(R.string.token), appContext.token)
+        .asJsonObject()
+        .setCallback(new FutureCallback<JsonObject>() {
+            @Override
+            public void onCompleted(Exception e, JsonObject result) {
+                modulesCallback(result);
+            }
+        });
     }
 
 
-    public void modulesCallback(JSONObject result) {
+    public void modulesCallback(JsonObject result) {
 
         if (result == null) {
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
@@ -97,10 +87,11 @@ public class ModulesActivity extends AbstractActivity {
         }
 
         try {
-            JSONArray mods = result.getJSONArray(getString(R.string.domain_modules));
+            JsonArray mods = result.getAsJsonArray(getString(R.string.domain_modules));
+
             Spinner msgs = (Spinner)findViewById(R.id.modules);
             ListView lst = (ListView)findViewById(R.id.modules_title);
-            final ArrayList<JSONObject>[] modules = getDick(mods);
+            final ArrayList<JsonObject>[] modules = getDick(mods);
 
             msgs.setAdapter(vAdapter);
             lst.setAdapter(mAdapter);
@@ -113,14 +104,14 @@ public class ModulesActivity extends AbstractActivity {
                     selectedSemester = position;
 
                     if (position < modules.length && modules[position] != null) {
-                        ArrayList<JSONObject> tmp = modules[position];
+                        ArrayList<JsonObject> tmp = modules[position];
 
                         mArrayList.clear();
                         mAdapter.notifyDataSetChanged();
 
                         try {
                             for (int i = 0; i < tmp.size(); ++i) {
-                                String modName = tmp.get(i).getString(getString(R.string.title));
+                                String modName = tmp.get(i).get(getString(R.string.title)).getAsString();
 
                                 mArrayList.add(modName);
                                 mAdapter.notifyDataSetChanged();
@@ -148,17 +139,17 @@ public class ModulesActivity extends AbstractActivity {
 
                     ListView lv = (ListView) findViewById(R.id.modules_title);
                     String moduleName = (String) (lv.getItemAtPosition(position));
-                    ArrayList<JSONObject> sem = modules[selectedSemester];
-                    JSONObject selectedModule = sem.get(position);
+                    ArrayList<JsonObject> sem = modules[selectedSemester];
+                    JsonObject selectedModule = sem.get(position).getAsJsonObject();
 
                     try {
-                        String scolarYear = selectedModule.getString(getString(R.string.scolarYear));
-                        String codeModule = selectedModule.getString(getString(R.string.codeModule));
-                        String codeInstance = selectedModule.getString(getString(R.string.codeInstance));
+                        String scolarYear = selectedModule.get(getString(R.string.scolarYear)).getAsString();
+                        String codeModule = selectedModule.get(getString(R.string.codeModule)).getAsString();
+                        String codeInstance = selectedModule.get(getString(R.string.codeInstance)).getAsString();
 
                         Toast.makeText(getApplicationContext(), moduleName, Toast.LENGTH_SHORT).show();
                         executeRequestModule(scolarYear, codeModule, codeInstance);
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -173,18 +164,6 @@ public class ModulesActivity extends AbstractActivity {
 
 
     private void executeRequestModule(String scolarYear, String codeModule, String codeInstance) {
-        HashMap<String, String> netOpts = new HashMap<String, String>();
-        netOpts.put(getString(R.string.request_method), getString(R.string.request_method_get));
-        netOpts.put(getString(R.string.domain), getString(R.string.domain_module));
-        netOpts.put(getString(R.string.callback), getString(R.string.callback_info));
-
-        HashMap<String, String> args = new HashMap<String, String>();
-        args.put(getString(R.string.token), appContext.token);
-        args.put(getString(R.string.scolarYear), scolarYear);
-        args.put(getString(R.string.codeModule), codeModule);
-        args.put(getString(R.string.codeInstance), codeInstance);
-
-
         LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.popup_module, null);
         final PopupWindow popupWindow = new PopupWindow(popupView,
@@ -208,20 +187,32 @@ public class ModulesActivity extends AbstractActivity {
         mProgressView = pView.findViewById(R.id.login_progress);
         showProgress(true);
 
-        RequestAPI reqHandler = new RequestAPI();
-        reqHandler.execute(this, netOpts, args);
+
+        Ion.with(getApplicationContext())
+        .load(getString(R.string.request_method_get), getString(R.string.api_domain) + getString(R.string.domain_module))
+        .setBodyParameter(getString(R.string.token), appContext.token)
+        .setBodyParameter(getString(R.string.scolarYear), scolarYear)
+        .setBodyParameter(getString(R.string.codeModule), codeModule)
+        .setBodyParameter(getString(R.string.codeInstance), codeInstance)
+        .asJsonObject()
+        .setCallback(new FutureCallback<JsonObject>() {
+            @Override
+            public void onCompleted(Exception e, JsonObject result) {
+                requestCallback(result);
+            }
+        });
     }
 
 
-    public void requestCallback(JSONObject result) {
+    public void requestCallback(JsonObject result) {
         if (result == null) {
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
-            String title = result.getString(getString(R.string.title));
-            String grade = result.getString(getString(R.string.grade));
+            String title = result.get(getString(R.string.title)).getAsString();
+            String grade = result.get(getString(R.string.grade)).getAsString();
 
             TextView moduleName = (TextView)pView.findViewById(R.id.module_name);
             TextView moduleGrade = (TextView)pView.findViewById(R.id.module_grade);
@@ -229,55 +220,52 @@ public class ModulesActivity extends AbstractActivity {
             moduleGrade.setText(getString(R.string.dispGrade) + grade);
 
             ListView moduleInfo = (ListView)pView.findViewById(R.id.module_infos);
-            JSONArray activities = result.getJSONArray("activites");
+            JsonArray activities = result.getAsJsonArray("activites");
 
             activitiesArrayList.clear();
             moduleInfo.setAdapter(activitiesAdapter);
 
-            for (int i=0; i < activities.length(); ++i) {
-
-                JSONObject tmp = activities.getJSONObject(i);
-                Boolean isProject = tmp.getBoolean("is_projet");
+            for (int i=0; i < activities.size(); ++i) {
+                JsonObject tmp = activities.get(i).getAsJsonObject();
+                Boolean isProject = tmp.get("is_projet").getAsBoolean();
 
                 if (isProject) {
+                    String infos = tmp.get(getString(R.string.title)).getAsString() + "          ";
 
-                    String infos = tmp.getString(getString(R.string.title)) + "          ";
+                    if (!tmp.get("note").isJsonNull())
+                        infos += tmp.get("note").getAsString();
 
-                    if (!tmp.getString("note").equals("null"))
-                        infos += tmp.getString("note");
                     activitiesArrayList.add(infos);
-                    activitiesAdapter.notifyDataSetChanged();
                 }
             }
+            activitiesAdapter.notifyDataSetChanged();
             showProgress(false);
-
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             showProgress(false);
             e.printStackTrace();
         }
     }
 
 
-    private ArrayList<JSONObject>[] getDick(JSONArray mods) {
+    private ArrayList<JsonObject>[] getDick(JsonArray mods) {
         if (mods == null)
             return null;
 
-        ArrayList<JSONObject>[] res = new ArrayList[11];
+        ArrayList<JsonObject>[] res = new ArrayList[11];
 
-        for (int i = 0; i < mods.length(); ++i) {
+        for (int i = 0; i < mods.size(); ++i) {
 
             try {
-                JSONObject tmp = mods.getJSONObject(i);
-
-                int sem = tmp.getInt(getString(R.string.semester));
+                JsonObject tmp = mods.get(i).getAsJsonObject();
+                int sem = tmp.get(getString(R.string.semester)).getAsInt();
 
                 if (res[sem] == null) {
-                    res[sem] = new ArrayList<JSONObject>();
+                    res[sem] = new ArrayList<JsonObject>();
                 }
                 res[sem].add(tmp);
             }
-            catch (JSONException e) {
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -285,45 +273,8 @@ public class ModulesActivity extends AbstractActivity {
     }
 
 
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 2:
-                mTitle = getString(R.string.title_section1);
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(i);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section6);
-                Intent intent = new Intent(getApplicationContext(), YearbookActivity.class);
-                startActivity(intent);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section2);
-                Intent inte = new Intent(getApplicationContext(), CalendarActivity.class);
-                startActivity(inte);
-                break;
-            case 5:
-                mTitle = getString(R.string.title_section3);
-                break;
-            case 6:
-                mTitle = getString(R.string.title_section4);
-                Intent inten = new Intent(getApplicationContext(), ProjectsActivity.class);
-                startActivity(inten);
-                break;
-            case 7:
-                mTitle = getString(R.string.title_section5);
-                Intent in = new Intent(getApplicationContext(), DisconnectActivity.class);
-                startActivity(in);
-                break;
-        }
-    }
-
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -345,8 +296,6 @@ public class ModulesActivity extends AbstractActivity {
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
