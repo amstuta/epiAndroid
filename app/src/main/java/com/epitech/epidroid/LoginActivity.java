@@ -19,6 +19,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,22 +108,22 @@ public class LoginActivity extends ActionBarActivity {
         } else {
             showProgress(true);
 
-            HashMap<String, String> netOptions = new HashMap<String, String>();
-            netOptions.put(getString(R.string.request_method), getString(R.string.request_method_post));
-            netOptions.put(getString(R.string.domain), getString(R.string.domain_login));
-            netOptions.put(getString(R.string.callback), getString(R.string.callback_info));
-
-            HashMap<String, String> args = new HashMap<String, String>();
-            args.put(getString(R.string.param_login), email);
-            args.put(getString(R.string.param_pass), password);
-
-            mAuthTask = new RequestAPI();
-            mAuthTask.execute(this, netOptions, args);
+            Ion.with(getApplicationContext())
+                .load(getString(R.string.api_domain) + getString(R.string.domain_login))
+                    .setBodyParameter(getString(R.string.domain_login), email)
+                    .setBodyParameter(getString(R.string.param_pass), password)
+                    .asJsonObject()
+            .setCallback(new FutureCallback<JsonObject>() {
+                @Override
+                public void onCompleted(Exception e, JsonObject result) {
+                    callback(result);
+                }
+            });
         }
     }
 
 
-    public void requestCallback(JSONObject result) {
+    public void callback(JsonObject result) {
         if (result == null) {
             mAuthTask = null;
             showProgress(false);
@@ -127,7 +131,8 @@ public class LoginActivity extends ActionBarActivity {
             return;
         }
         try {
-            token = result.getString(getString(R.string.token));
+            token = result.get(getString(R.string.token)).getAsString();
+
             EpiContext context = (EpiContext)getApplication();
             context.token = token;
 
@@ -143,7 +148,6 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
 
-
     private boolean isEmailValid(String email) {
         return email.contains("_");
     }
@@ -156,9 +160,6 @@ public class LoginActivity extends ActionBarActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -180,8 +181,6 @@ public class LoginActivity extends ActionBarActivity {
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }

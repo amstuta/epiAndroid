@@ -2,9 +2,7 @@ package com.epitech.epidroid;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -12,20 +10,21 @@ import android.content.Intent;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class MainActivity extends AbstractActivity {
 
-    private ImageRequest    imgHandler = new ImageRequest();
-    private EpiContext      appContext;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> arrayList = new ArrayList<String>();
-    private CharSequence mTitle;
+    private ImageRequest            imgHandler = new ImageRequest();
+    private EpiContext              appContext;
+    private ArrayAdapter<String>    adapter;
+    private ArrayList<String>       arrayList = new ArrayList<String>();
+    private CharSequence            mTitle;
 
 
     @Override
@@ -47,37 +46,31 @@ public class MainActivity extends AbstractActivity {
             finish();
         }
         else {
-            RequestAPI reqHandler = new RequestAPI();
-            HashMap<String, String> netOptions = new HashMap<String, String>();
-            netOptions.put(getString(R.string.request_method), getString(R.string.request_method_post));
-            netOptions.put(getString(R.string.domain), getString(R.string.domain_infos));
-            netOptions.put(getString(R.string.callback), getString(R.string.callback_info));
-
-            HashMap<String, String> args = new HashMap<String, String>();
-            args.put(getString(R.string.token), appContext.token);
-
-            reqHandler.execute(this, netOptions, args);
+            Ion.with(getApplicationContext())
+                .load(getString(R.string.api_domain) + getString(R.string.domain_infos))
+                .setBodyParameter(getString(R.string.token), appContext.token)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        requestCallback(result);
+                    }
+                });
         }
     }
 
-
-    public void requestCallback(JSONObject result) {
+    public void requestCallback(JsonObject result) {
 
         if (result == null)
             finish();
 
         appContext.userInfos = result;
 
-        try {
-            JSONObject infos = result.getJSONObject(getString(R.string.domain_infos));
-            String picture = infos.getString(getString(R.string.picture));
+        JsonObject infos = result.getAsJsonObject(getString(R.string.domain_infos));
+        String picture = infos.get(getString(R.string.picture)).getAsString();
 
-            imgHandler.execute(this, picture);
-            displayInfos();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        imgHandler.execute(this, picture);
+        displayInfos();
     }
 
 
@@ -88,39 +81,41 @@ public class MainActivity extends AbstractActivity {
 
 
     private void displayInfos() {
-        JSONObject infos = appContext.userInfos;
+        JsonObject infos = appContext.userInfos;
 
         if (infos == null)
             return;
 
         try {
-            JSONObject inf = infos.getJSONObject(getString(R.string.domain_infos));
-            String login = inf.getString(getString(R.string.domain_login));
-            String title = inf.getString(getString(R.string.title));
+            JsonObject inf = infos.getAsJsonObject(getString(R.string.domain_infos));
+            String login = inf.get(getString(R.string.domain_login)).getAsString();
+            String title = inf.get(getString(R.string.title)).getAsString();
+            JsonArray history = infos.getAsJsonArray(getString(R.string.history));
 
             TextView ttl = (TextView)findViewById(R.id.title);
             ttl.setText(title);
 
-            JSONArray history = infos.getJSONArray(getString(R.string.history));
             ListView msgs = (ListView)findViewById(R.id.messages);
             msgs.setAdapter(adapter);
 
-            for (int i=0; i < history.length(); ++i) {
-                arrayList.add(Html.fromHtml(history.getJSONObject(i).getString(getString(R.string.title))).toString());
-                adapter.notifyDataSetChanged();
+            for (int i=0; i < history.size(); ++i) {
+                JsonObject tmp = history.get(i).getAsJsonObject();
+
+                arrayList.add(Html.fromHtml(tmp.get(getString(R.string.title)).getAsString()).toString());
             }
+            adapter.notifyDataSetChanged();
 
-            RequestAPI reqHandler = new RequestAPI();
-            HashMap<String, String> netOpts = new HashMap<String, String>();
-            netOpts.put(getString(R.string.request_method), getString(R.string.request_method_get));
-            netOpts.put(getString(R.string.domain), getString(R.string.domain_user));
-            netOpts.put(getString(R.string.callback), getString(R.string.callback_user));
-
-            HashMap<String, String> args = new HashMap<String, String>();
-            args.put(getString(R.string.token), appContext.token);
-            args.put(getString(R.string.domain_user), login);
-
-            reqHandler.execute(this, netOpts, args);
+            Ion.with(getApplicationContext())
+            .load("GET", getString(R.string.api_domain) + getString(R.string.domain_user))
+                    .setBodyParameter(getString(R.string.token), appContext.token)
+                    .setBodyParameter(getString(R.string.domain_user), login)
+            .asJsonObject()
+            .setCallback(new FutureCallback<JsonObject>() {
+                @Override
+                public void onCompleted(Exception e, JsonObject result) {
+                    userCallback(result);
+                }
+            });
 
         }
         catch (Exception e) {
@@ -129,16 +124,15 @@ public class MainActivity extends AbstractActivity {
     }
 
 
-    public void userCallback(JSONObject result) {
+    public void userCallback(JsonObject result) {
         if (result == null)
             return;
 
         TextView msgsN = (TextView)findViewById(R.id.logTime);
         try {
-
-            Integer credits = result.getInt(getString(R.string.credits));
-            JSONArray gpas = result.getJSONArray(getString(R.string.gpa));
-            String gpaBachelor = gpas.getJSONObject(0).getString(getString(R.string.gpa));
+            Integer credits = result.get(getString(R.string.credits)).getAsInt();
+            JsonArray gpas = result.getAsJsonArray(getString(R.string.gpa));
+            String gpaBachelor = gpas.get(0).getAsJsonObject().get(getString(R.string.gpa)).getAsString();
 
             TextView cred = (TextView)findViewById(R.id.credits);
             TextView gpa = (TextView)findViewById(R.id.gpa);
@@ -146,14 +140,16 @@ public class MainActivity extends AbstractActivity {
             cred.setText("Credits: " + credits.toString());
             gpa.setText("GPA Bachelor: " + gpaBachelor);
 
-            JSONObject ns = result.getJSONObject(getString(R.string.ns_stat));
-            String timeActive = ns.getString(getString(R.string.ns_stat_active));
+            JsonObject ns = result.get(getString(R.string.ns_stat)).getAsJsonObject();
+            String timeActive = ns.get(getString(R.string.ns_stat_active)).getAsString();
+
             msgsN.setText("Netsoul: " + timeActive);
         }
         catch (Exception e) {
             msgsN.setText("Netsoul: 0");
         }
     }
+
 
     public void onSectionAttached(int number) {
         switch (number) {
