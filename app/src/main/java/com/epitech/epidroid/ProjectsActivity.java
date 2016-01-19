@@ -24,7 +24,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,11 +37,12 @@ import java.util.HashMap;
 
 public class ProjectsActivity extends AbstractActivity {
 
-    private NavigationDrawerFragment mNavigationDrawerFragment;
-    private CharSequence mTitle;
-    private ArrayList<String> projList = new ArrayList<String>();
-    private ArrayAdapter<String> projAdapter;
-    private EpiContext app;
+
+    private NavigationDrawerFragment    mNavigationDrawerFragment;
+    private CharSequence                mTitle;
+    private ArrayList<String>           projList = new ArrayList<String>();
+    private ArrayAdapter<String>        projAdapter;
+    private EpiContext                  app;
 
 
     @Override
@@ -52,40 +57,37 @@ public class ProjectsActivity extends AbstractActivity {
         projAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, projList);
         ListView projDisp = (ListView)findViewById(R.id.project_title);
         projDisp.setAdapter(projAdapter);
-        retrieveProjects();
+
+        Ion.with(getApplicationContext())
+                .load(getString(R.string.request_method_get), getString(R.string.api_domain) + getString(R.string.domain_projects))
+                .setBodyParameter(getString(R.string.token), app.token)
+                .asJsonArray()
+                .setCallback(new FutureCallback<JsonArray>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonArray result) {
+                        requestCallback(result);
+                    }
+                });
     }
 
-    private void retrieveProjects(){
-        HashMap<String, String> netOptions = new HashMap<String, String>();
-        HashMap<String, String> args = new HashMap<String, String>();
-        RequestAPI reqHandler = new RequestAPI();
 
-        netOptions.put(getString(R.string.domain), getString(R.string.domain_projects));
-        netOptions.put(getString(R.string.request_method), getString(R.string.request_method_get));
-        netOptions.put(getString(R.string.callback), getString(R.string.callback_info));
-        args.put(getString(R.string.token), app.token);
-        reqHandler.execute(this, netOptions, args);
-    }
-
-    public void requestCallback(JSONObject response){
+    public void requestCallback(JsonArray response) {
 
         if (response == null)
             return;
         try {
-            JSONArray projs = response.getJSONArray(getString(R.string.response));
-            final JSONArray cleanProjs = new JSONArray();
+            final JsonArray cleanProjs = new JsonArray();
 
-            for (int i=0; i < projs.length(); ++i) {
-                if (projs.getJSONObject(i).getString(getString(R.string.acti_type)).equals(getString(R.string.proj)))
-                    cleanProjs.put(projs.getJSONObject(i));
+            for (int i=0; i < response.size() ; ++i) {
+                if (response.get(i).getAsJsonObject().get(getString(R.string.acti_type)).getAsString().equals(getString(R.string.proj)))
+                    cleanProjs.add(response.get(i));
             }
 
-            for(int i = 0; i < cleanProjs.length(); ++i) {
-                if (cleanProjs.getJSONObject(i).getString(getString(R.string.acti_type)).equals(getString(R.string.proj))) {
-                    projList.add(cleanProjs.getJSONObject(i).getString(getString(R.string.activity_title)));
-                    projAdapter.notifyDataSetChanged();
-                }
+            for(int i = 0; i < cleanProjs.size(); ++i) {
+                projList.add(cleanProjs.get(i).getAsJsonObject().get(getString(R.string.activity_title)).getAsString());
             }
+            projAdapter.notifyDataSetChanged();
+
 
             ListView projDisp = (ListView)findViewById(R.id.project_title);
 
@@ -94,8 +96,8 @@ public class ProjectsActivity extends AbstractActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                     try {
-                        final JSONObject clicked = cleanProjs.getJSONObject(position);
-                        final int registered = clicked.getInt(getString(R.string.registered));
+                        final JsonObject clicked = cleanProjs.get(position).getAsJsonObject();
+                        final int registered = clicked.get(getString(R.string.registered)).getAsInt();
 
                         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                         View popupView = layoutInflater.inflate(R.layout.popup_projects, null);
@@ -127,7 +129,8 @@ public class ProjectsActivity extends AbstractActivity {
                             }
                         });
 
-                        title.setText(clicked.getString(getString(R.string.activity_title)));
+                        title.setText(clicked.get(getString(R.string.activity_title)).getAsString());
+
                         if (registered == 1) {
                             reg.setText("You are registered.");
                             regButton.setText("Unregister");
@@ -138,67 +141,63 @@ public class ProjectsActivity extends AbstractActivity {
 
                         popupWindow.showAtLocation(popupView, Gravity.RIGHT, Gravity.CENTER, Gravity.CENTER);
 
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
 
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    private void registerRequest(JSONObject project) {
-        RequestAPI reqHandler = new RequestAPI();
-        HashMap<String, String> netOpts = new HashMap<String, String>();
-        HashMap<String, String> args = new HashMap<String, String>();
-
+    private void registerRequest(JsonObject project) {
         try {
-            netOpts.put(getString(R.string.request_method), getString(R.string.request_method_post));
-            netOpts.put(getString(R.string.domain), getString(R.string.domain_project));
-            netOpts.put(getString(R.string.callback), getString(R.string.callback_project));
-            args.put(getString(R.string.token), app.token);
-            args.put(getString(R.string.scolarYear), project.getString(getString(R.string.scolarYear)));
-            args.put(getString(R.string.codeModule), project.getString(getString(R.string.codeModule)));
-            args.put(getString(R.string.codeInstance), project.getString(getString(R.string.codeInstance)));
-            args.put(getString(R.string.codeActivity), project.getString(getString(R.string.codeActivity)));
+            Ion.with(getApplicationContext())
+                    .load(getString(R.string.api_domain) + getString(R.string.domain_project))
+                    .setBodyParameter(getString(R.string.token), app.token)
+                    .setBodyParameter(getString(R.string.scolarYear), project.get(getString(R.string.scolarYear)).getAsString())
+                    .setBodyParameter(getString(R.string.codeModule), project.get(getString(R.string.codeModule)).getAsString())
+                    .setBodyParameter(getString(R.string.codeInstance), project.get(getString(R.string.codeInstance)).getAsString())
+                    .setBodyParameter(getString(R.string.codeActivity), project.get(getString(R.string.codeActivity)).getAsString())
+            .asJsonObject()
+            .setCallback(new FutureCallback<JsonObject>() {
+                @Override
+                public void onCompleted(Exception e, JsonObject result) {
+                }
+            });
 
             Toast.makeText(getApplicationContext(), "You registered", Toast.LENGTH_SHORT).show();
-            reqHandler.execute(this, netOpts, args);
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    private void unregisterRequest(JSONObject project) {
-        RequestAPI reqHandler = new RequestAPI();
-        HashMap<String, String> netOpts = new HashMap<String, String>();
-        HashMap<String, String> args = new HashMap<String, String>();
-
+    private void unregisterRequest(JsonObject project) {
         try {
-            netOpts.put(getString(R.string.request_method), getString(R.string.request_method_delete));
-            netOpts.put(getString(R.string.domain), getString(R.string.domain_project));
-            netOpts.put(getString(R.string.callback), getString(R.string.callback_project));
-            args.put(getString(R.string.token), app.token);
-            args.put(getString(R.string.scolarYear), project.getString(getString(R.string.scolarYear)));
-            args.put(getString(R.string.codeModule), project.getString(getString(R.string.codeModule)));
-            args.put(getString(R.string.codeInstance), project.getString(getString(R.string.codeInstance)));
-            args.put(getString(R.string.codeActivity), project.getString(getString(R.string.codeActivity)));
+            Ion.with(getApplicationContext())
+                    .load(getString(R.string.request_method_delete), getString(R.string.api_domain) + getString(R.string.domain_project))
+                    .setBodyParameter(getString(R.string.token), app.token)
+                    .setBodyParameter(getString(R.string.scolarYear), project.get(getString(R.string.scolarYear)).getAsString())
+                    .setBodyParameter(getString(R.string.codeModule), project.get(getString(R.string.codeModule)).getAsString())
+                    .setBodyParameter(getString(R.string.codeInstance), project.get(getString(R.string.codeInstance)).getAsString())
+                    .setBodyParameter(getString(R.string.codeActivity), project.get(getString(R.string.codeActivity)).getAsString())
+            .asJsonObject()
+            .setCallback(new FutureCallback<JsonObject>() {
+                @Override
+                public void onCompleted(Exception e, JsonObject result) {
+                }
+            });
 
             Toast.makeText(getApplicationContext(), "You unregistered", Toast.LENGTH_SHORT).show();
-            reqHandler.execute(this, netOpts, args);
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    public void projectCallback(JSONObject result) {
     }
 }

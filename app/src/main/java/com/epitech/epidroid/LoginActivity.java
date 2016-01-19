@@ -119,7 +119,7 @@ public class LoginActivity extends ActionBarActivity {
 
 
     public void callback(JsonObject result) {
-        if (result == null) {
+        if (result == null || !result.has(getString(R.string.token))) {
             showProgress(false);
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             return;
