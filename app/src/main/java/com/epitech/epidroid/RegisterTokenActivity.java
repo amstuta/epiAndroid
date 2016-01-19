@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,9 +24,11 @@ import java.util.HashMap;
 
 public class RegisterTokenActivity extends ActionBarActivity {
 
+
     private EpiContext  appContext;
     private JsonObject  activity;
     private Boolean     registered = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,24 +122,28 @@ public class RegisterTokenActivity extends ActionBarActivity {
 
 
     private void registerToActivity() {
-        HashMap<String, String> netOpts = new HashMap<String, String>();
-        HashMap<String, String> args = new HashMap<String, String>();
-        RequestAPI reqHandler = new RequestAPI();
+        String reqMethod;
 
-        netOpts.put(getString(R.string.domain), getString(R.string.domain_event));
         if (registered)
-            netOpts.put(getString(R.string.request_method), getString(R.string.request_method_get));
+            reqMethod = getString(R.string.request_method_get);
         else
-            netOpts.put(getString(R.string.request_method), getString(R.string.request_method_delete));
-        netOpts.put(getString(R.string.callback), getString(R.string.callback_info));
+            reqMethod = getString(R.string.request_method_delete);
 
         try {
-            args.put(getString(R.string.token), appContext.token);
-            args.put(getString(R.string.scolarYear), activity.get(getString(R.string.scolarYear)).getAsString());
-            args.put(getString(R.string.codeModule), activity.get(getString(R.string.codeModule)).getAsString());
-            args.put(getString(R.string.codeInstance), activity.get(getString(R.string.codeInstance)).getAsString());
-            args.put(getString(R.string.codeActivity), activity.get(getString(R.string.codeActivity)).getAsString());
-            args.put(getString(R.string.codeEvent), activity.get(getString(R.string.codeEvent)).getAsString());
+            Ion.with(getApplicationContext())
+                    .load(reqMethod, getString(R.string.api_domain) + getString(R.string.domain_event))
+                    .setBodyParameter(getString(R.string.token), appContext.token)
+                    .setBodyParameter(getString(R.string.scolarYear), activity.get(getString(R.string.scolarYear)).getAsString())
+                    .setBodyParameter(getString(R.string.codeModule), activity.get(getString(R.string.codeModule)).getAsString())
+                    .setBodyParameter(getString(R.string.codeInstance), activity.get(getString(R.string.codeInstance)).getAsString())
+                    .setBodyParameter(getString(R.string.codeActivity), activity.get(getString(R.string.codeActivity)).getAsString())
+                    .setBodyParameter(getString(R.string.codeEvent), activity.get(getString(R.string.codeEvent)).getAsString())
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                        }
+                    });
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -143,37 +151,31 @@ public class RegisterTokenActivity extends ActionBarActivity {
         }
 
         Toast.makeText(getApplicationContext(), getString(R.string.registered_success), Toast.LENGTH_SHORT).show();
-        reqHandler.execute(this, netOpts, args);
     }
 
 
     private void validateToken(String token) {
-        HashMap<String, String> netOpts = new HashMap<String, String>();
-        HashMap<String, String> args = new HashMap<String, String>();
-        RequestAPI reqHandler = new RequestAPI();
-
-        netOpts.put(getString(R.string.domain), getString(R.string.domain_token));
-        netOpts.put(getString(R.string.request_method), getString(R.string.request_method_post));
-        netOpts.put(getString(R.string.callback), getString(R.string.callback_info));
-
         try {
-            args.put(getString(R.string.token), appContext.token);
-            args.put(getString(R.string.scolarYear), activity.get(getString(R.string.scolarYear)).getAsString());
-            args.put(getString(R.string.codeModule), activity.get(getString(R.string.codeModule)).getAsString());
-            args.put(getString(R.string.codeInstance), activity.get(getString(R.string.codeInstance)).getAsString());
-            args.put(getString(R.string.codeActivity), activity.get(getString(R.string.codeActivity)).getAsString());
-            args.put(getString(R.string.codeEvent), activity.get(getString(R.string.codeEvent)).getAsString());
-            args.put(getString(R.string.tokenCode), token);
+            Ion.with(getApplicationContext())
+                    .load(getString(R.string.api_domain) + getString(R.string.domain_token))
+                    .setBodyParameter(getString(R.string.token), appContext.token)
+                    .setBodyParameter(getString(R.string.scolarYear), activity.get(getString(R.string.scolarYear)).getAsString())
+                    .setBodyParameter(getString(R.string.codeModule), activity.get(getString(R.string.codeModule)).getAsString())
+                    .setBodyParameter(getString(R.string.codeInstance), activity.get(getString(R.string.codeInstance)).getAsString())
+                    .setBodyParameter(getString(R.string.codeActivity), activity.get(getString(R.string.codeActivity)).getAsString())
+                    .setBodyParameter(getString(R.string.codeEvent), activity.get(getString(R.string.codeEvent)).getAsString())
+                    .setBodyParameter(getString(R.string.tokenCode), token)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                        }
+                    });
         }
         catch (Exception e) {
             e.printStackTrace();
             return;
         }
         Toast.makeText(getApplicationContext(), getString(R.string.token_validated), Toast.LENGTH_SHORT).show();
-
-        reqHandler.execute(this, netOpts, args);
     }
-
-
-    public void requestCallback(JSONObject result) {}
 }
