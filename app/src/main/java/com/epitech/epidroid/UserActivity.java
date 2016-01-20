@@ -2,6 +2,7 @@ package com.epitech.epidroid;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -98,12 +99,17 @@ public class UserActivity extends AbstractActivity implements View.OnClickListen
             Ion.with(img).load(url);
             TextView email = (TextView)findViewById(R.id.mail_value);
             email.setText(result.get("internal_email").getAsString());
+            TextView call = (TextView)findViewById(R.id.phone_number);
             if (result.get("userinfo").getAsJsonObject().has("telephone")) {
-                TextView call = (TextView)findViewById(R.id.phone_number);
                 Button add = (Button)findViewById(R.id.button_add);
                 add.setVisibility(View.VISIBLE);
                 call.setText(result.get("userinfo").getAsJsonObject().get("telephone").getAsJsonObject().get("value").getAsString());
             }
+            else{
+                call.setClickable(false);
+                call.setTextColor(Color.BLACK);
+            }
+
 
         }
         catch (Exception e) {
@@ -123,10 +129,12 @@ public class UserActivity extends AbstractActivity implements View.OnClickListen
         Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
         intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
         intent.putExtra(ContactsContract.Intents.Insert.EMAIL, ((TextView)findViewById(R.id.mail_value)).getText())
-                .putExtra(ContactsContract.Intents.Insert.EMAIL_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
-                .putExtra(ContactsContract.Intents.Insert.PHONE, ((TextView) findViewById(R.id.phone_number)).getText())
-                .putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
-                .putExtra(ContactsContract.Intents.Insert.NAME, ((TextView) findViewById(R.id.title_year)).getText());
+                .putExtra(ContactsContract.Intents.Insert.EMAIL_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK);
+        if (!(((TextView) findViewById(R.id.phone_number)).getText().equals("N/A"))) {
+            intent.putExtra(ContactsContract.Intents.Insert.PHONE, ((TextView) findViewById(R.id.phone_number)).getText())
+                    .putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
+        }
+                intent.putExtra(ContactsContract.Intents.Insert.NAME, ((TextView) findViewById(R.id.title_year)).getText());
         startActivity(intent);
     }
 }

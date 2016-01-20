@@ -143,6 +143,8 @@
     <string name="title_activity_user">User Info</string>
     <string name="user_picture">picture</string>
     <string name="phone">phone number:</string>
+    <string name="placeholder">N/A</string>
     <string name="mail">mail address:</string>
+    <string name="add">Add contact</string>
 
 </resources>

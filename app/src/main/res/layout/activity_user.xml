@@ -64,15 +64,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/phone_number"
+            android:text="@string/placeholder"
             android:textColor="#3399CC"
             android:clickable="true"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_add"
-            android:text="+"
-            android:visibility="invisible"/>
 
     </LinearLayout>
 
@@ -95,6 +89,13 @@
             android:clickable="true"/>
 
     </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_add"
+        android:text="@string/add"
+        />
 
 
 </LinearLayout>
