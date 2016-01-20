@@ -67,6 +67,13 @@
             android:textColor="#3399CC"
             android:clickable="true"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_add"
+            android:text="+"
+            android:visibility="invisible"/>
+
     </LinearLayout>
 
     <LinearLayout

@@ -1,11 +1,14 @@
 package com.epitech.epidroid;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,13 +19,18 @@ import com.koushikdutta.ion.Ion;
 
 import org.w3c.dom.Text;
 
-public class UserActivity extends AbstractActivity{
+public class UserActivity extends AbstractActivity implements View.OnClickListener{
 
     private NavigationDrawerFragment    mNavigationDrawerFragment;
     private CharSequence                mTitle;
     private EpiContext appContext;
     private JsonObject userInfos = null;
 
+    /**
+     * Automatically called whenever this activity is started.
+     * will pre-set the fields and retrieves the selected user's infos and picture.
+     * @param savedInstanceState bundle sent from previous activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +48,8 @@ public class UserActivity extends AbstractActivity{
                 startActivity(intent);
             }
         });
+        final TextView add = (Button)findViewById(R.id.button_add);
+        add.setOnClickListener(this);
         final TextView mail = (TextView)findViewById(R.id.mail_value);
         mail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,14 +74,13 @@ public class UserActivity extends AbstractActivity{
                         }
                     });
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public void userCallback(JsonObject result) {
+    private void userCallback(JsonObject result) {
         try {
             System.out.println(result);
             TextView name = (TextView)findViewById(R.id.title_year);
@@ -91,6 +100,8 @@ public class UserActivity extends AbstractActivity{
             email.setText(result.get("internal_email").getAsString());
             if (result.get("userinfo").getAsJsonObject().has("telephone")) {
                 TextView call = (TextView)findViewById(R.id.phone_number);
+                Button add = (Button)findViewById(R.id.button_add);
+                add.setVisibility(View.VISIBLE);
                 call.setText(result.get("userinfo").getAsJsonObject().get("telephone").getAsJsonObject().get("value").getAsString());
             }
 
@@ -102,4 +113,20 @@ public class UserActivity extends AbstractActivity{
 
     }
 
+    /**
+     * Listener called whenever the "add contact" button is pressed.
+     * will open a contact-adding window with the name, the email and phone number pre-filled.
+     * @param v parent view.
+     */
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.EMAIL, ((TextView)findViewById(R.id.mail_value)).getText())
+                .putExtra(ContactsContract.Intents.Insert.EMAIL_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
+                .putExtra(ContactsContract.Intents.Insert.PHONE, ((TextView) findViewById(R.id.phone_number)).getText())
+                .putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+                .putExtra(ContactsContract.Intents.Insert.NAME, ((TextView) findViewById(R.id.title_year)).getText());
+        startActivity(intent);
+    }
 }
