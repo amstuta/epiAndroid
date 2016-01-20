@@ -84,7 +84,13 @@
     <string name="planning_start">start</string>
     <string name="planning_end">end</string>
     <string name="spinner_title">Semesters</string>
+    <string name="spinner_projects">Filters</string>
+    <string name="filter_all_projects">All projects</string>
+    <string name="filter_registered_projects">Only registered projects</string>
+    <string name="you_registered">You registered</string>
+    <string name="you_unregistered">You unregistered</string>
     <string name="modules_title">Select a semester</string>
+    <string name="projects_title">Select a filter</string>
     <string name="semester">semester</string>
     <string name="projects_view">projects</string>
     <string name="activity_title">acti_title</string>

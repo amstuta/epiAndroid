@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,13 @@ public class ProjectsActivity extends AbstractActivity {
     private ArrayList<String>           projList = new ArrayList<String>();
     private ArrayAdapter<String>        projAdapter;
     private EpiContext                  app;
+    private JsonArray                   cleanProjects = new JsonArray();
+    private JsonArray                   registeredProjects = new JsonArray();
+
+    /* Spinner */
+    private ArrayList<String>           filterList = new ArrayList<String>();
+    private ArrayAdapter<String>        filterAdapter;
+    private int                         selected = 0;
 
 
     @Override
@@ -55,8 +63,50 @@ public class ProjectsActivity extends AbstractActivity {
         mTitle = getTitle();
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer,(DrawerLayout)findViewById(R.id.drawer_layout));
         projAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, projList);
+        filterAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, filterList);
+
+
         ListView projDisp = (ListView)findViewById(R.id.project_title);
         projDisp.setAdapter(projAdapter);
+        projDisp.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final JsonObject selectedItem;
+                if (selected == 0) {
+                    selectedItem = cleanProjects.get(position).getAsJsonObject();
+                }
+                else {
+                    selectedItem = registeredProjects.get(position).getAsJsonObject();
+                }
+                openPopup(selectedItem);
+            }
+        });
+
+
+        Spinner fSpinner = (Spinner)findViewById(R.id.filter);
+        fSpinner.setAdapter(filterAdapter);
+
+        filterList.add(getString(R.string.filter_all_projects));
+        filterList.add(getString(R.string.filter_registered_projects));
+        filterAdapter.notifyDataSetChanged();
+
+        fSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    selected = 0;
+                    displayAll();
+                }
+                else {
+                    selected = 1;
+                    displayRegistered();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         Ion.with(getApplicationContext())
                 .load(getString(R.string.request_method_get), getString(R.string.api_domain) + getString(R.string.domain_projects))
@@ -65,96 +115,103 @@ public class ProjectsActivity extends AbstractActivity {
                 .setCallback(new FutureCallback<JsonArray>() {
                     @Override
                     public void onCompleted(Exception e, JsonArray result) {
-                        requestCallback(result);
+                        filterProjects(result);
+                        displayAll();
                     }
                 });
     }
 
 
+    private void filterProjects(JsonArray projects) {
+        try {
+            for (int i=0; i < projects.size() ; ++i) {
+
+                JsonObject tmp = projects.get(i).getAsJsonObject();
+
+                if (tmp.get(getString(R.string.acti_type)).getAsString().equals(getString(R.string.proj))) {
+                    cleanProjects.add(projects.get(i));
+
+                    if (tmp.get(getString(R.string.registered)).getAsInt() == 1)
+                        registeredProjects.add(tmp);
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void displayAll() {
+        projList.clear();
+        for(int i = 0; i < cleanProjects.size(); ++i) {
+            projList.add(cleanProjects.get(i).getAsJsonObject().get(getString(R.string.activity_title)).getAsString());
+        }
+        projAdapter.notifyDataSetChanged();
+    }
+
+
+    private void displayRegistered() {
+        projList.clear();
+        for(int i = 0; i < registeredProjects.size(); ++i) {
+            projList.add(registeredProjects.get(i).getAsJsonObject().get(getString(R.string.activity_title)).getAsString());
+        }
+        projAdapter.notifyDataSetChanged();
+    }
+
+
     /**
      * Callback for the projects getting request.
-     * Filters the projects that have the flag `is_proj` and displays them.
-     * Sets events handlers for the projects list.
-     * @param response The request response in JSON format
+     * Opens a popup with the selected project informations.
+     * @param selected Selected project in the projects list.
      */
-    public void requestCallback(JsonArray response) {
-
-        if (response == null)
-            return;
+    public void openPopup(final JsonObject selected) {
         try {
-            final JsonArray cleanProjs = new JsonArray();
+            final int registered = selected.get(getString(R.string.registered)).getAsInt();
 
-            for (int i=0; i < response.size() ; ++i) {
-                if (response.get(i).getAsJsonObject().get(getString(R.string.acti_type)).getAsString().equals(getString(R.string.proj)))
-                    cleanProjs.add(response.get(i));
-            }
+            LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+            View popupView = layoutInflater.inflate(R.layout.popup_projects, null);
+            final PopupWindow popupWindow = new PopupWindow(popupView,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            for(int i = 0; i < cleanProjs.size(); ++i) {
-                projList.add(cleanProjs.get(i).getAsJsonObject().get(getString(R.string.activity_title)).getAsString());
-            }
-            projAdapter.notifyDataSetChanged();
+            TextView title = (TextView) popupView.findViewById(R.id.project_name);
+            TextView reg = (TextView) popupView.findViewById(R.id.project_registered);
+            Button regButton = (Button) popupView.findViewById(R.id.register);
+            Button btnDismiss = (Button) popupView.findViewById(R.id.dismiss);
 
 
-            ListView projDisp = (ListView)findViewById(R.id.project_title);
-
-            projDisp.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            btnDismiss.setOnClickListener(new Button.OnClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                }
+            });
 
-                    try {
-                        final JsonObject clicked = cleanProjs.get(position).getAsJsonObject();
-                        final int registered = clicked.get(getString(R.string.registered)).getAsInt();
-
-                        LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                        View popupView = layoutInflater.inflate(R.layout.popup_projects, null);
-                        final PopupWindow popupWindow = new PopupWindow(popupView,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                        TextView title = (TextView) popupView.findViewById(R.id.project_name);
-                        TextView reg = (TextView) popupView.findViewById(R.id.project_registered);
-                        Button regButton = (Button) popupView.findViewById(R.id.register);
-                        Button btnDismiss = (Button) popupView.findViewById(R.id.dismiss);
-
-
-                        btnDismiss.setOnClickListener(new Button.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                popupWindow.dismiss();
-                            }
-                        });
-
-                        regButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (registered == 1) {
-                                    unregisterRequest(clicked);
-                                } else {
-                                    registerRequest(clicked);
-                                }
-                            }
-                        });
-
-                        title.setText(clicked.get(getString(R.string.activity_title)).getAsString());
-
-                        if (registered == 1) {
-                            reg.setText("You are registered.");
-                            regButton.setText("Unregister");
-                        } else {
-                            reg.setText("You are not registered");
-                            regButton.setText("Register");
-                        }
-
-                        popupWindow.showAtLocation(popupView, Gravity.RIGHT, Gravity.CENTER, Gravity.CENTER);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            regButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (registered == 1) {
+                        unregisterRequest(selected);
+                    } else {
+                        registerRequest(selected);
                     }
                 }
             });
 
-        }
-        catch (Exception e) {
+            title.setText(selected.get(getString(R.string.activity_title)).getAsString());
+
+            if (registered == 1) {
+                reg.setText("You are registered.");
+                regButton.setText("Unregister");
+            } else {
+                reg.setText("You are not registered");
+                regButton.setText("Register");
+            }
+
+            popupWindow.showAtLocation(popupView, Gravity.RIGHT, Gravity.CENTER, Gravity.CENTER);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -175,8 +232,7 @@ public class ProjectsActivity extends AbstractActivity {
                 public void onCompleted(Exception e, JsonObject result) {
                 }
             });
-
-            Toast.makeText(getApplicationContext(), "You registered", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.you_registered), Toast.LENGTH_SHORT).show();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -199,8 +255,7 @@ public class ProjectsActivity extends AbstractActivity {
                 public void onCompleted(Exception e, JsonObject result) {
                 }
             });
-
-            Toast.makeText(getApplicationContext(), "You unregistered", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.you_unregistered), Toast.LENGTH_SHORT).show();
         }
         catch (Exception e) {
             e.printStackTrace();
