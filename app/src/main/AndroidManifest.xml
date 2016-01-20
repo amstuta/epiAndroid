@@ -51,6 +51,11 @@
         <activity
             android:name=".RegisterTokenActivity"
             android:label="@string/title_activity_register_token"/>
+            android:label="@string/title_activity_register_token" />
+
+        <activity
+            android:name=".UserActivity"
+            android:label="@string/title_activity_user"/>
     </application>
 
 </manifest>

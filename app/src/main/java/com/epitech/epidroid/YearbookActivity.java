@@ -47,7 +47,6 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
     //private View mProgressView;
     //private PopupWindow pWIndow;
     //private View pView;
-    //private GoogleApiClient client;
 
 
     @Override
@@ -174,6 +173,10 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
+            Intent intent = new Intent(this, UserActivity.class);
+            intent.putExtra(getString(R.string.prompt_login), studentInf.get(mArrayList.get(position)).get("login").getAsString());
+            intent.putExtra("picture", studentInf.get(mArrayList.get(position)).get("picture").getAsString());
+            startActivity(intent);
             Toast.makeText(this, studentInf.get(mArrayList.get(position)).get("title").getAsString(), Toast.LENGTH_SHORT).show();
         } catch (Exception E) {
             E.printStackTrace();

@@ -140,5 +140,9 @@
     <string name="validate">Validate</string>
     <string name="close">Close</string>
     <string name="hint_token">Token</string>
+    <string name="title_activity_user">User Info</string>
+    <string name="user_picture">picture</string>
+    <string name="phone">phone number:</string>
+    <string name="mail">mail address:</string>
 
 </resources>

@@ -31,6 +31,8 @@ public abstract class AbstractActivity extends ActionBarActivity implements Navi
      * @param  number The index of the selected item.
      */
     protected void onSectionAttached(int number) {
+        if (number != 1 && this.getClass() == UserActivity.class)
+            finish();
         switch (number) {
             case 2:
                 mTitle = getString(R.string.title_section1);
