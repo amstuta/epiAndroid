@@ -13,10 +13,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_registered"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/modules_title"/>
+            android:text="@string/modules_title"
+            android:id="@+id/module_title"/>
 
         <Spinner
             android:id="@+id/modules"
@@ -30,6 +36,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/modules_title"
             android:clickable="true" />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/modules_not_registered"
+            android:clickable="true"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 

@@ -25,9 +25,10 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
-public class ModulesActivity extends AbstractActivity {
+public class ModulesActivity extends AbstractActivity implements AdapterView.OnItemSelectedListener {
 
     private EpiContext              appContext = null;
     private ArrayAdapter<String>    mAdapter;
@@ -39,11 +40,20 @@ public class ModulesActivity extends AbstractActivity {
     private ArrayList<String>       activitiesArrayList = new ArrayList<String>();
     private ArrayAdapter<String>    activitiesAdapter;
 
+    /* List of not registered modules */
+    private JsonArray               modsNotRegistered = new JsonArray();
+    private ArrayList<String>       modsNotRegList = new ArrayList<String>();
+    private ArrayAdapter<String>    modsNotRegAdapter;
+
     /* Popup */
     private View                    mLoginFormView;
     private View                    mProgressView;
     private PopupWindow             pWIndow;
     private View                    pView;
+
+    /* Spinner registered / not */
+    private ArrayList<String>       spinnerChoices = new ArrayList<String>();
+    private ArrayAdapter<String>    spinnerAdapter;
 
 
     /**
@@ -58,12 +68,24 @@ public class ModulesActivity extends AbstractActivity {
         vAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, vArrayList);
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayList);
         activitiesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, activitiesArrayList);
+        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerChoices);
+        modsNotRegAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, modsNotRegList);
+
+        Spinner cSpinner = (Spinner)findViewById(R.id.spinner_registered);
+        cSpinner.setAdapter(spinnerAdapter);
+        spinnerChoices.add(getString(R.string.filter_all_modules));
+        spinnerChoices.add(getString(R.string.filter_not_registered_modules));
+        spinnerAdapter.notifyDataSetChanged();
+        cSpinner.setOnItemSelectedListener(this);
+
+        ListView mdsToRegister = (ListView)findViewById(R.id.modules_not_registered);
+        mdsToRegister.setAdapter(modsNotRegAdapter);
 
         NavigationDrawerFragment mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout)findViewById(R.id.drawer_layout));
 
-        if (appContext.token == null) {
+        if (appContext.token == null || appContext.userInfos == null) {
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -78,6 +100,48 @@ public class ModulesActivity extends AbstractActivity {
                 modulesCallback(result);
             }
         });
+
+        try {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+
+            JsonObject infos = appContext.userInfos.get(getString(R.string.domain_infos)).getAsJsonObject();
+            String location = infos.get(getString(R.string.location)).getAsString();
+            String course = infos.get(getString(R.string.course_code)).getAsString();
+
+            Ion.with(getApplicationContext())
+                    .load(getString(R.string.request_method_get), getString(R.string.api_domain) + getString(R.string.domain_allmodules))
+                    .setBodyParameter(getString(R.string.token), appContext.token)
+                    .setBodyParameter(getString(R.string.scolarYear), "" + year)
+                    .setBodyParameter(getString(R.string.location), location)
+                    .setBodyParameter(getString(R.string.course), course)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            try {
+                                JsonArray items = result.get(getString(R.string.items)).getAsJsonArray();
+
+                                for (int i=0; i < items.size(); ++i) {
+                                    JsonObject tmp = items.get(i).getAsJsonObject();
+                                    String status = tmp.get(getString(R.string.status)).getAsString();
+
+                                    if (status.equals(getString(R.string.notregistered))) {
+                                        modsNotRegistered.add(tmp);
+                                        modsNotRegList.add(tmp.get(getString(R.string.title)).getAsString());
+                                    }
+                                }
+                                modsNotRegAdapter.notifyDataSetChanged();
+                            }
+                            catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -293,6 +357,42 @@ public class ModulesActivity extends AbstractActivity {
         }
         return res;
     }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Spinner msgs = (Spinner)findViewById(R.id.modules);
+        ListView mds = (ListView)findViewById(R.id.modules_title);
+        ListView mdsToRegister = (ListView)findViewById(R.id.modules_not_registered);
+        TextView title = (TextView)findViewById(R.id.module_title);
+
+        //mdsToRegister.setAdapter(modsNotRegAdapter);
+        if (position == 0) {
+
+            msgs.setVisibility(View.VISIBLE);
+            mds.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
+            mdsToRegister.setVisibility(View.GONE);
+
+
+        }
+        else {
+            msgs.setVisibility(View.GONE);
+            mds.setVisibility(View.GONE);
+            title.setVisibility(View.GONE);
+            mdsToRegister.setVisibility(View.VISIBLE);
+
+            /*
+            for (int i=0; i < modsNotRegistered.size(); ++i) {
+                modsNotRegList.add(modsNotRegistered.get(i).getAsJsonObject().get(getString(R.string.title)).getAsString());
+            }
+            modsNotRegAdapter.notifyDataSetChanged();
+            */
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {}
 
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

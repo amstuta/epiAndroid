@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/profileImg"
                 android:layout_weight="0.90"
-                android:layout_gravity="right"/>
+                android:layout_gravity="right" />
 
         </LinearLayout>
 

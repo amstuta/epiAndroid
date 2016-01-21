@@ -48,6 +48,7 @@
     <string name="domain_project">project</string>
     <string name="domain_event">event</string>
     <string name="domain_token">token</string>
+    <string name="domain_allmodules">allmodules</string>
     <string name="scolarYear">scolaryear</string>
     <string name="codeModule">codemodule</string>
     <string name="codeInstance">codeinstance</string>
@@ -87,6 +88,8 @@
     <string name="spinner_projects">Filters</string>
     <string name="filter_all_projects">All projects</string>
     <string name="filter_registered_projects">Only registered projects</string>
+    <string name="filter_all_modules">Registered modules</string>
+    <string name="filter_not_registered_modules">Non registered modules</string>
     <string name="you_registered">You registered</string>
     <string name="you_unregistered">You unregistered</string>
     <string name="modules_title">Select a semester</string>
@@ -114,6 +117,11 @@
     <string name="token_validated">Token validated</string>
     <string name="isProject">is_projet</string>
     <string name="mark">note</string>
+    <string name="location">location</string>
+    <string name="course">course</string>
+    <string name="course_code">course_code</string>
+    <string name="status">status</string>
+    <string name="notregistered">notregistered</string>
 
     <!-- Titles menu sections -->
     <string name="title_section0" />
