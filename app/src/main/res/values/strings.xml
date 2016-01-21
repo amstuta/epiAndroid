@@ -125,6 +125,7 @@
     <string name="course_code">course_code</string>
     <string name="status">status</string>
     <string name="notregistered">notregistered</string>
+    <string name="Quit">Quit</string>
     <string name="end_register">end_register</string>
     <string name="end_registration">End registration: </string>
 

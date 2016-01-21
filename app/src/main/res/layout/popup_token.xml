@@ -4,14 +4,14 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#3399CC"
+    android:background="@color/lightBlue"
     android:id="@+id/popup_token">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/token_button"
-        android:textColor="#FFFFFF" />
+        android:textColor="@color/white" />
 
     <EditText
         android:layout_width="match_parent"

@@ -3,18 +3,18 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rLayout"
-    android:background="#3399CC"
-    android:minWidth="200dp">
+    android:background="@color/lightBlue"
+    android:minWidth="@dimen/calendar_width">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/date"
-        android:textColor="#FFFFFF"/>
+        android:textColor="@color/white"/>
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="@dimen/calendar_height"
         android:id="@+id/activities"
         android:clickable="true" />
 
@@ -22,7 +22,7 @@
         android:id="@+id/dismiss"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Quit"
-        android:textColor="#FFFFFF"/>
+        android:text="@string/Quit"
+        android:textColor="@color/white"/>
 
 </LinearLayout>

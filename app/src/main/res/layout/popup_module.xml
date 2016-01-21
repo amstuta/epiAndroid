@@ -4,16 +4,16 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="200dp"
+    android:minWidth="@dimen/calendar_width"
     android:id="@+id/popup_module"
-    android:background="#3399CC" >
+    android:background="@color/lightBlue" >
 
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/progressBar_size"
         android:visibility="gone" />
 
     <LinearLayout
@@ -25,27 +25,27 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:id="@+id/module_name"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:id="@+id/module_grade" />
 
         <ListView
             android:layout_width="wrap_content"
-            android:layout_height="300dp"
+            android:layout_height="@dimen/popup_height"
             android:id="@+id/module_infos"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/dismiss"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Quit"
-            android:textColor="#FFFFFF" />
+            android:text="@string/close"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 

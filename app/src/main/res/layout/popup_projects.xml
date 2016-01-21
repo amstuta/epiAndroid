@@ -4,9 +4,9 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="200dp"
+    android:minWidth="@dimen/calendar_width"
     android:id="@string/popup_projects"
-    android:background="#3399CC">
+    android:background="@color/lightBlue">
 
     <!--
     <ProgressBar
@@ -27,13 +27,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:id="@+id/project_name"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:id="@+id/project_registered"/>
 
         <LinearLayout
@@ -44,15 +44,15 @@
             <Button
                 android:id="@+id/register"
                 android:layout_width="match_parent"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/dismiss"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Quit"
-                android:textColor="#FFFFFF" />
+                android:text="@string/Quit"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
