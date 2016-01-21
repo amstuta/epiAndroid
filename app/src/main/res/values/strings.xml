@@ -106,6 +106,7 @@
     <string name="response">response</string>
     <string name="activity">activity</string>
     <string name="yearbook_title">select a promotion</string>
+    <string name="location_title">select a location</string>
     <string name="spinner_yearbook">promo</string>
     <string name="items">items</string>
     <string name="tokenCode">tokenvalidationcode</string>
@@ -137,6 +138,8 @@
     <string name="tek1">tek1</string>
     <string name="tek2">tek2</string>
     <string name="tek3">tek3</string>
+    <string name="tek4">tek4</string>
+    <string name="tek5">tek5</string>
     <string name="validate">Validate</string>
     <string name="close">Close</string>
     <string name="hint_token">Token</string>
@@ -146,5 +149,19 @@
     <string name="placeholder">N/A</string>
     <string name="mail">mail address:</string>
     <string name="add">Add contact</string>
+
+    <!-- campus -->
+    <string name="paris">FR/PAR</string>
+    <string name="bordeaux">FR/BDX</string>
+    <string name="lille">FR/LIL</string>
+    <string name="lyon">FR/LYN</string>
+    <string name="marseille">FR/MAR</string>
+    <string name="montpelliers">FR/MPL</string>
+    <string name="nancy">FR/NCY</string>
+    <string name="nantes">FR/NAN</string>
+    <string name="nice">FR/NCE</string>
+    <string name="rennes">FR/REN</string>
+    <string name="strasbourgs">FR/STG</string>
+    <string name="toulouse">FR/TLS</string>
 
 </resources>

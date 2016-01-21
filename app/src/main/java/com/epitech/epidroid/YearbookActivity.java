@@ -23,6 +23,7 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -36,9 +37,13 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
     private ArrayList<String> mArrayList = new ArrayList<String>();
     private ArrayAdapter<String> vAdapter;
     private ArrayList<String> vArrayList = new ArrayList<String>();
+    private ArrayAdapter<String> locAdapter;
+    private ArrayList<String> locArrayList = new ArrayList<String>();
+
     private ArrayList<String> activitiesArrayList = new ArrayList<String>();
     private ArrayAdapter<String> activitiesAdapter;
     private String currentChoice = "tek1";
+    private String currentLoc = "FR/PAR";
     private int offset = 0;
     private ProgressDialog load = null;
     private Boolean isLoading = false;
@@ -59,6 +64,7 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
         mTitle = getTitle();
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
         vAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, vArrayList);
+        locAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, locArrayList);
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayList);
         activitiesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, activitiesArrayList);
         if (appContext.token == null) {
@@ -67,17 +73,32 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
         }
         studentInf = new HashMap<String, JsonObject>();
         Spinner msgs = (Spinner) findViewById(R.id.yearbook_promo);
+        Spinner loc = (Spinner) findViewById(R.id.yearbook_location);
         ListView disp = (ListView) findViewById(R.id.yearbook_list);
         disp.setOnItemClickListener(this);
         disp.setAdapter(mAdapter);
         msgs.setAdapter(vAdapter);
+        loc.setAdapter(locAdapter);
         vArrayList.add(getString(R.string.tek1));
         vArrayList.add(getString(R.string.tek2));
         vArrayList.add(getString(R.string.tek3));
+        vArrayList.add(getString(R.string.tek4));
+        vArrayList.add(getString(R.string.tek5));
         vAdapter.notifyDataSetChanged();
+        locAdapter.add(getString(R.string.paris));
+        locAdapter.add(getString(R.string.montpelliers));
+        locAdapter.add(getString(R.string.bordeaux));
+        locAdapter.add(getString(R.string.nice));
+        locAdapter.add(getString(R.string.nancy));
+        locAdapter.add(getString(R.string.nantes));
+        locAdapter.add(getString(R.string.strasbourgs));
+        locAdapter.add(getString(R.string.lyon));
+        locAdapter.add(getString(R.string.rennes));
+        locAdapter.add(getString(R.string.lille));
+        locAdapter.add(getString(R.string.marseille));
+        locAdapter.notifyDataSetChanged();
         msgs.setOnItemSelectedListener(this);
-
-        //client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        loc.setOnItemSelectedListener(this);
     }
 
 
@@ -88,8 +109,6 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
      */
     public void yearbookCallback(JsonObject result) {
         try {
-
-            System.out.println(result);
             JsonArray students;
             if (result.get(getString(R.string.items)).isJsonArray()) {
                 students = result.get(getString(R.string.items)).getAsJsonArray();
@@ -125,6 +144,7 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Spinner msgs = (Spinner) findViewById(R.id.yearbook_promo);
+        Spinner loci = (Spinner) findViewById(R.id.yearbook_location);
         if (Looper.myLooper() == Looper.getMainLooper()) {
             load.setTitle("loading");
             load.setMessage("retrieving students infos...");
@@ -135,19 +155,21 @@ public class YearbookActivity extends AbstractActivity implements AdapterView.On
             isLoading = true;
         }
 
-        if (!(((Spinner) findViewById(R.id.yearbook_promo)).getSelectedItem().toString().equals(currentChoice))) {
+        if (!(((Spinner) findViewById(R.id.yearbook_promo)).getSelectedItem().toString().equals(currentChoice)) ||
+                !(((Spinner) findViewById(R.id.yearbook_location)).getSelectedItem().toString().equals(currentLoc))) {
             mArrayList.clear();
             mAdapter.clear();
             studentInf.clear();
             mAdapter.notifyDataSetChanged();
             offset = 0;
             currentChoice = ((Spinner) findViewById(R.id.yearbook_promo)).getSelectedItem().toString();
+            currentLoc = ((Spinner) findViewById(R.id.yearbook_location)).getSelectedItem().toString();
         }
         Ion.with(getApplicationContext())
                 .load(getString(R.string.request_method_get), getString(R.string.api_domain) + getString(R.string.domain_yearbook))
                 .setBodyParameter(getString(R.string.token), appContext.token)
-                .setBodyParameter("year", "2015")
-                .setBodyParameter("location", "FR/PAR")
+                .setBodyParameter("year", "" + (Calendar.getInstance().get(Calendar.YEAR) - 1))
+                .setBodyParameter("location", loci.getSelectedItem().toString())
                 .setBodyParameter("promo", msgs.getSelectedItem().toString())
                 .setBodyParameter("offset", String.valueOf(offset))
         .asJsonObject()
