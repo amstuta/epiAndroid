@@ -13,4 +13,5 @@
 
     <dimen name="progressBar_size">8dp</dimen>
     <dimen name="popup_height">300dp</dimen>
+    <dimen name="popup_module_height">250dp</dimen>
 </resources>

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.content.Intent;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -65,11 +66,15 @@ public class MainActivity extends AbstractActivity {
      */
     public void requestCallback(JsonObject result) {
 
-        if (result == null)
+        if (result == null
+                || !result.has(getString(R.string.domain_infos))
+                || result.get(getString(R.string.domain_infos)).isJsonNull()) {
+            Toast.makeText(getApplicationContext(), getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             finish();
+            return;
+        }
 
         appContext.userInfos = result;
-
         try {
             JsonObject infos = result.getAsJsonObject(getString(R.string.domain_infos));
             String picture = infos.get(getString(R.string.picture)).getAsString();

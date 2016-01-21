@@ -292,7 +292,7 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
      * If possible, it displays the projects marks too.
      * @param  result the result of the request in JSON format
      */
-    public void requestCallback(JsonObject result) {
+    public void requestCallback(final JsonObject result) {
         if (result == null) {
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             return;
@@ -306,6 +306,14 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
             TextView moduleGrade = (TextView)pView.findViewById(R.id.module_grade);
             moduleName.setText(title);
             moduleGrade.setText(getString(R.string.dispGrade) + grade);
+
+            Button unReg = (Button)pView.findViewById(R.id.button_unregister);
+            unReg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    unregisterToModule(result);
+                }
+            });
 
             ListView moduleInfo = (ListView)pView.findViewById(R.id.module_infos);
             JsonArray activities = result.getAsJsonArray(getString(R.string.activites));
@@ -484,6 +492,32 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
                                 Toast.makeText(getApplicationContext(), getString(R.string.you_registered), Toast.LENGTH_SHORT).show();
                             else
                                 Toast.makeText(getApplicationContext(), getString(R.string.register_failed), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void unregisterToModule(final JsonObject module) {
+        try {
+            String scolarYear = module.get(getString(R.string.scolarYear)).getAsString();
+            String codeModule = module.get(getString(R.string.codeModule)).getAsString();
+            String codeInstance = module.get(getString(R.string.codeInstance)).getAsString();
+
+            Ion.with(getApplicationContext())
+                    .load(getString(R.string.request_method_delete), getString(R.string.api_domain) + getString(R.string.domain_module))
+                    .setBodyParameter(getString(R.string.token), appContext.token)
+                    .setBodyParameter(getString(R.string.scolarYear), scolarYear)
+                    .setBodyParameter(getString(R.string.codeModule), codeModule)
+                    .setBodyParameter(getString(R.string.codeInstance), codeInstance)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            Toast.makeText(getApplicationContext(), getString(R.string.you_unregistered), Toast.LENGTH_SHORT).show();
                         }
                     });
         }

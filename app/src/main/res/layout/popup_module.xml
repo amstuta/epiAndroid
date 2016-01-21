@@ -36,13 +36,20 @@
 
         <ListView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/popup_height"
+            android:layout_height="@dimen/popup_module_height"
             android:id="@+id/module_infos"
             android:textColor="@color/white" />
 
         <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_unregister"
+            android:text="@string/unregister"
+            android:textColor="@color/white"/>
+
+        <Button
             android:id="@+id/dismiss"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/close"
             android:textColor="@color/white" />
