@@ -53,9 +53,11 @@
     <string name="codeModule">codemodule</string>
     <string name="codeInstance">codeinstance</string>
     <string name="codeActivity">codeacti</string>
+    <string name="code">code</string>
     <string name="codeEvent">codeevent</string>
     <string name="title_module">titlemodule</string>
     <string name="event_registered">event_registered</string>
+    <string name="description">description</string>
 
     <!-- Functions & request strings -->
     <string name="callback_images">imageCallback</string>
@@ -92,6 +94,7 @@
     <string name="filter_not_registered_modules">Non registered modules</string>
     <string name="you_registered">You registered</string>
     <string name="you_unregistered">You unregistered</string>
+    <string name="register_failed">Failed registration</string>
     <string name="modules_title">Select a semester</string>
     <string name="projects_title">Select a filter</string>
     <string name="semester">semester</string>
@@ -122,6 +125,8 @@
     <string name="course_code">course_code</string>
     <string name="status">status</string>
     <string name="notregistered">notregistered</string>
+    <string name="end_register">end_register</string>
+    <string name="end_registration">End registration: </string>
 
     <!-- Titles menu sections -->
     <string name="title_section0" />

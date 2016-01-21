@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
-public class ModulesActivity extends AbstractActivity implements AdapterView.OnItemSelectedListener {
+public class ModulesActivity extends AbstractActivity implements AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
 
     private EpiContext              appContext = null;
     private ArrayAdapter<String>    mAdapter;
@@ -80,6 +80,7 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
 
         ListView mdsToRegister = (ListView)findViewById(R.id.modules_not_registered);
         mdsToRegister.setAdapter(modsNotRegAdapter);
+        mdsToRegister.setOnItemClickListener(this);
 
         NavigationDrawerFragment mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -88,6 +89,7 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
         if (appContext.token == null || appContext.userInfos == null) {
             Toast.makeText(this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
             finish();
+            return;
         }
 
         Ion.with(getApplicationContext())
@@ -103,7 +105,7 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
 
         try {
             Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
+            int year = calendar.get(Calendar.YEAR) - 1;
 
             JsonObject infos = appContext.userInfos.get(getString(R.string.domain_infos)).getAsJsonObject();
             String location = infos.get(getString(R.string.location)).getAsString();
@@ -366,33 +368,129 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
         ListView mdsToRegister = (ListView)findViewById(R.id.modules_not_registered);
         TextView title = (TextView)findViewById(R.id.module_title);
 
-        //mdsToRegister.setAdapter(modsNotRegAdapter);
         if (position == 0) {
 
             msgs.setVisibility(View.VISIBLE);
             mds.setVisibility(View.VISIBLE);
             title.setVisibility(View.VISIBLE);
             mdsToRegister.setVisibility(View.GONE);
-
-
         }
         else {
             msgs.setVisibility(View.GONE);
             mds.setVisibility(View.GONE);
             title.setVisibility(View.GONE);
             mdsToRegister.setVisibility(View.VISIBLE);
-
-            /*
-            for (int i=0; i < modsNotRegistered.size(); ++i) {
-                modsNotRegList.add(modsNotRegistered.get(i).getAsJsonObject().get(getString(R.string.title)).getAsString());
-            }
-            modsNotRegAdapter.notifyDataSetChanged();
-            */
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        try {
+            JsonObject selected = modsNotRegistered.get(position).getAsJsonObject();
+            String scolarYear = selected.get(getString(R.string.scolarYear)).getAsString();
+            String codeModule = selected.get(getString(R.string.code)).getAsString();
+            String codeInstance = selected.get(getString(R.string.codeInstance)).getAsString();
+
+            Ion.with(getApplicationContext())
+                    .load(getString(R.string.request_method_get), getString(R.string.api_domain) + getString(R.string.domain_module))
+                    .setBodyParameter(getString(R.string.token), appContext.token)
+                    .setBodyParameter(getString(R.string.scolarYear), scolarYear)
+                    .setBodyParameter(getString(R.string.codeModule), codeModule)
+                    .setBodyParameter(getString(R.string.codeInstance), codeInstance)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            displayPopupRegister(result);
+                        }
+                    });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void displayPopupRegister(final JsonObject result) {
+        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.popup_module_registration, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        pWIndow = popupWindow;
+        pView = popupView;
+
+        Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
+        btnDismiss.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        Button register = (Button)popupView.findViewById(R.id.module_register);
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerToModule(result);
+            }
+        });
+
+        try {
+            String title = result.get(getString(R.string.title)).getAsString();
+            String desc = result.get(getString(R.string.description)).getAsString();
+            if (result.has(getString(R.string.end_register)) && !result.get(getString(R.string.end_register)).isJsonNull()) {
+                String end = result.get(getString(R.string.end_register)).getAsString();
+                TextView e = (TextView) popupView.findViewById(R.id.module_end_register);
+                e.setText(getString(R.string.end_registration) + end);
+            }
+
+            TextView t = (TextView)popupView.findViewById(R.id.module_title);
+            TextView d = (TextView)popupView.findViewById(R.id.module_description);
+
+            t.setText(title);
+            d.setText(desc);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        pWIndow.showAtLocation(pView, Gravity.RIGHT, Gravity.CENTER, Gravity.CENTER);
+    }
+
+
+    public void registerToModule(final JsonObject module) {
+        try {
+            String scolarYear = module.get(getString(R.string.scolarYear)).getAsString();
+            String codeModule = module.get(getString(R.string.codeModule)).getAsString();
+            String codeInstance = module.get(getString(R.string.codeInstance)).getAsString();
+
+            Ion.with(getApplicationContext())
+                    .load(getString(R.string.api_domain) + getString(R.string.domain_module))
+                    .setBodyParameter(getString(R.string.token), appContext.token)
+                    .setBodyParameter(getString(R.string.scolarYear), scolarYear)
+                    .setBodyParameter(getString(R.string.codeModule), codeModule)
+                    .setBodyParameter(getString(R.string.codeInstance), codeInstance)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            if (result != null && result.has(getString(R.string.domain_login)))
+                                Toast.makeText(getApplicationContext(), getString(R.string.you_registered), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getApplicationContext(), getString(R.string.register_failed), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
