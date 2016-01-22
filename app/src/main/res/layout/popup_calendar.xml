@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/rLayout"
     android:background="@color/lightBlue"
-    android:minWidth="@dimen/calendar_width">
+    android:minWidth="@dimen/calendar_popup_width">
 
     <TextView
         android:layout_width="wrap_content"

@@ -1,5 +1,6 @@
 package com.epitech.epidroid;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -21,6 +22,9 @@ import com.koushikdutta.ion.Ion;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class RegisterTokenActivity extends ActionBarActivity {
@@ -49,11 +53,22 @@ public class RegisterTokenActivity extends ActionBarActivity {
         ImageView reg = (ImageView)findViewById(R.id.register_button);
         ImageView ret = (ImageView)findViewById(R.id.return_button);
         ImageView tok = (ImageView)findViewById(R.id.token_button);
+        TextView time = (TextView)findViewById(R.id.activity_time);
+        TextView date = (TextView)findViewById(R.id.activity_date);
 
         try {
+            // Activity infos
             title.setText(activity.get(getString(R.string.activity_title)).getAsString());
             module.setText(activity.get(getString(R.string.title_module)).getAsString());
 
+            // Display date
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date dat = format.parse(activity.get(getString(R.string.planning_start)).getAsString());
+            Date tim = format.parse(activity.get(getString(R.string.planning_end)).getAsString());
+            date.setText(new SimpleDateFormat("dd MMM yyyy").format(dat));
+            time.setText(new SimpleDateFormat("HH:mm").format(dat) + " - " + new SimpleDateFormat("HH:mm").format(tim));
+
+            // Registration status
             String regist = activity.get(getString(R.string.event_registered)).getAsString();
             if (!regist.equals("false")) {
                 registered = true;
@@ -61,6 +76,9 @@ public class RegisterTokenActivity extends ActionBarActivity {
             }
             else
                 reg.setBackgroundResource(R.drawable.ic_action_register);
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
         }
         catch (Exception e) {
             e.printStackTrace();

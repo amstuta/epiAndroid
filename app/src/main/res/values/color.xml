@@ -2,4 +2,5 @@
 <resources>
     <color name="lightBlue" type="color">#3399CC</color>
     <color name="white" type="color">#FFFFFF</color>
+    <color name="buttons_color">#2261BF</color>
 </resources>
