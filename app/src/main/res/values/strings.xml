@@ -128,6 +128,7 @@
     <string name="Quit">Quit</string>
     <string name="end_register">end_register</string>
     <string name="end_registration">End registration: </string>
+    <string name="active_time">Netsoul: </string>
 
     <!-- Titles menu sections -->
     <string name="title_section0" />

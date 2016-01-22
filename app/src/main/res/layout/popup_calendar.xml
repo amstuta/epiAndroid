@@ -22,7 +22,7 @@
         android:id="@+id/dismiss"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Quit"
+        android:text="@string/close"
         android:textColor="@color/white"/>
 
 </LinearLayout>

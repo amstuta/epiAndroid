@@ -27,22 +27,25 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/register_button" />
+        <ImageView
+            android:layout_width="@dimen/actions_size"
+            android:layout_height="@dimen/actions_size"
+            android:id="@+id/register_button"
+            android:clickable="true"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:layout_width="@dimen/actions_size"
+            android:layout_height="@dimen/actions_size"
             android:id="@+id/token_button"
-            android:text="@string/token_button" />
+            android:src="@drawable/ic_action_token"
+            android:clickable="true"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:layout_width="@dimen/actions_size"
+            android:layout_height="@dimen/actions_size"
+            android:src="@drawable/ic_action_previous"
             android:id="@+id/return_button"
-            android:text="@string/return_button"/>
+            android:clickable="true"/>
 
     </LinearLayout>
 </LinearLayout>

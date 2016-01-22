@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,9 +46,9 @@ public class RegisterTokenActivity extends ActionBarActivity {
 
         TextView title = (TextView)findViewById(R.id.activity_title);
         TextView module = (TextView)findViewById(R.id.activity_module);
-        Button reg = (Button)findViewById(R.id.register_button);
-        Button ret = (Button)findViewById(R.id.return_button);
-        Button tok = (Button)findViewById(R.id.token_button);
+        ImageView reg = (ImageView)findViewById(R.id.register_button);
+        ImageView ret = (ImageView)findViewById(R.id.return_button);
+        ImageView tok = (ImageView)findViewById(R.id.token_button);
 
         try {
             title.setText(activity.get(getString(R.string.activity_title)).getAsString());
@@ -56,10 +57,10 @@ public class RegisterTokenActivity extends ActionBarActivity {
             String regist = activity.get(getString(R.string.event_registered)).getAsString();
             if (!regist.equals("false")) {
                 registered = true;
-                reg.setText(getString(R.string.unregister));
+                reg.setBackgroundResource(R.drawable.ic_action_min);
             }
             else
-                reg.setText(getString(R.string.register));
+                reg.setBackgroundResource(R.drawable.ic_action_register);
         }
         catch (Exception e) {
             e.printStackTrace();

@@ -65,8 +65,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/phone_number"
             android:text="@string/placeholder"
-            android:textColor="#3399CC"
-            android:clickable="true"/>
+            android:textColor="#3399CC"/>
 
     </LinearLayout>
 
@@ -85,18 +84,46 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mail_value"
-            android:textColor="@color/lightBlue"
-            android:clickable="true"/>
+            android:textColor="@color/lightBlue"/>
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button_add"
-        android:text="@string/add"
-        />
+        android:orientation="horizontal">
 
+        <ImageView
+            android:layout_width="@dimen/actions_size"
+            android:layout_height="@dimen/actions_size"
+            android:src="@drawable/ic_action_call"
+            android:id="@+id/action_call"
+            android:clickable="true"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:layout_width="@dimen/actions_size"
+            android:layout_height="@dimen/actions_size"
+            android:src="@drawable/ic_action_message"
+            android:id="@+id/action_message"
+            android:clickable="true"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:layout_width="@dimen/actions_size"
+            android:layout_height="@dimen/actions_size"
+            android:src="@drawable/ic_action_email"
+            android:id="@+id/action_mail"
+            android:clickable="true"/>
+
+        <ImageView
+            android:layout_width="@dimen/actions_size"
+            android:layout_height="@dimen/actions_size"
+            android:src="@drawable/ic_action_addcontact"
+            android:id="@+id/action_contact"
+            android:clickable="true"/>
+
+    </LinearLayout>
 
 </LinearLayout>
 

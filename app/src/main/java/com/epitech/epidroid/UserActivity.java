@@ -22,10 +22,12 @@ import org.w3c.dom.Text;
 
 public class UserActivity extends AbstractActivity implements View.OnClickListener{
 
+
     private NavigationDrawerFragment    mNavigationDrawerFragment;
     private CharSequence                mTitle;
-    private EpiContext appContext;
-    private JsonObject userInfos = null;
+    private EpiContext                  appContext;
+    private JsonObject                  userInfos = null;
+
 
     /**
      * Automatically called whenever this activity is started.
@@ -41,18 +43,14 @@ public class UserActivity extends AbstractActivity implements View.OnClickListen
         mNavigationDrawerFragment = (NavigationDrawerFragment)getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-        final TextView call = (TextView)findViewById(R.id.phone_number);
-        call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + call.getText().toString()));
-                startActivity(intent);
-            }
-        });
-        final TextView add = (Button)findViewById(R.id.button_add);
-        add.setOnClickListener(this);
+
+        ImageView addImg = (ImageView)findViewById(R.id.action_contact);
+        addImg.setOnClickListener(this);
+
+
         final TextView mail = (TextView)findViewById(R.id.mail_value);
-        mail.setOnClickListener(new View.OnClickListener() {
+        ImageView mailImg = (ImageView)findViewById(R.id.action_mail);
+        mailImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_SEND);
@@ -61,6 +59,27 @@ public class UserActivity extends AbstractActivity implements View.OnClickListen
                 startActivity(Intent.createChooser(intent, "Send mail"));
             }
         });
+
+        final TextView call = (TextView)findViewById(R.id.phone_number);
+        ImageView callImg = (ImageView)findViewById(R.id.action_call);
+        callImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + call.getText().toString()));
+                startActivity(intent);
+            }
+        });
+        ImageView msgImg = (ImageView)findViewById(R.id.action_message);
+        msgImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
+                smsIntent.setType("vnd.android-dir/mms-sms");
+                smsIntent.setData(Uri.parse("sms:" + call.getText().toString()));
+                startActivity(smsIntent);
+            }
+        });
+
         try {
             Ion.with(getApplicationContext())
                     .load(getString(R.string.request_method_get), getString(R.string.api_domain) + getString(R.string.domain_user))
@@ -92,7 +111,7 @@ public class UserActivity extends AbstractActivity implements View.OnClickListen
             gpa.setText("GPA Bachelor: " + result.get("gpa").getAsJsonArray().get(0).getAsJsonObject().get("gpa").getAsString());
             credits.setText("Credits:" + result.get("credits").getAsString());
             String logged = !result.has(getString(R.string.ns_stat))? "0" : result.get(getString(R.string.ns_stat)).getAsJsonObject().get("active").getAsString();
-            logTime.setText(logged);
+            logTime.setText(getString(R.string.active_time) + logged);
             ImageView img = (ImageView) findViewById(R.id.profileImg_year);
             System.out.println(getIntent().getExtras().getString("picture"));
             String url = getString(R.string.api_photos) + getIntent().getExtras().getString(getString(R.string.prompt_login)) + ".bmp";
@@ -101,8 +120,11 @@ public class UserActivity extends AbstractActivity implements View.OnClickListen
             email.setText(result.get("internal_email").getAsString());
             TextView call = (TextView)findViewById(R.id.phone_number);
             if (result.get("userinfo").getAsJsonObject().has("telephone")) {
-                Button add = (Button)findViewById(R.id.button_add);
-                add.setVisibility(View.VISIBLE);
+                ImageView callImg = (ImageView)findViewById(R.id.action_call);
+                ImageView smsImg = (ImageView)findViewById(R.id.action_message);
+
+                callImg.setVisibility(View.VISIBLE);
+                smsImg.setVisibility(View.VISIBLE);
                 call.setText(result.get("userinfo").getAsJsonObject().get("telephone").getAsJsonObject().get("value").getAsString());
             }
             else{

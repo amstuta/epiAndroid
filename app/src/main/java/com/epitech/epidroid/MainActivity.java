@@ -157,10 +157,10 @@ public class MainActivity extends AbstractActivity {
             JsonObject ns = result.get(getString(R.string.ns_stat)).getAsJsonObject();
             String timeActive = ns.get(getString(R.string.ns_stat_active)).getAsString();
 
-            msgsN.setText("Netsoul: " + timeActive);
+            msgsN.setText(getString(R.string.active_time) + timeActive);
         }
         catch (Exception e) {
-            msgsN.setText("Netsoul: 0");
+            msgsN.setText(getString(R.string.active_time) + "0");
         }
     }
 }
