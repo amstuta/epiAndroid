@@ -177,6 +177,7 @@ public class ProjectsActivity extends AbstractActivity {
 
             TextView title = (TextView) popupView.findViewById(R.id.project_name);
             TextView reg = (TextView) popupView.findViewById(R.id.project_registered);
+            TextView mod = (TextView)popupView.findViewById(R.id.project_module);
             Button regButton = (Button) popupView.findViewById(R.id.register);
             Button btnDismiss = (Button) popupView.findViewById(R.id.dismiss);
 
@@ -200,6 +201,7 @@ public class ProjectsActivity extends AbstractActivity {
             });
 
             title.setText(selected.get(getString(R.string.activity_title)).getAsString());
+            mod.setText(selected.get(getString(R.string.title_module2)).getAsString());
 
             if (registered == 1) {
                 reg.setText("You are registered.");

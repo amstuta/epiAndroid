@@ -107,15 +107,25 @@ public class UserActivity extends AbstractActivity implements View.OnClickListen
             TextView gpa = (TextView) findViewById(R.id.gpa_year);
             TextView credits = (TextView)findViewById(R.id.credits_year);
             TextView logTime = (TextView)findViewById(R.id.logTime_year);
+            TextView gpaM = (TextView)findViewById(R.id.gpa_master);
+
             name.setText(result.get("title").getAsString());
-            gpa.setText("GPA Bachelor: " + result.get("gpa").getAsJsonArray().get(0).getAsJsonObject().get("gpa").getAsString());
+            gpa.setText("GPA Bachelor: " + result.get(getString(R.string.gpa)).getAsJsonArray().get(0).getAsJsonObject().get(getString(R.string.gpa)).getAsString());
+            if (result.get(getString(R.string.gpa)).getAsJsonArray().size() > 1) {
+                gpaM.setText("GPA Master: " + result.get(getString(R.string.gpa)).getAsJsonArray().get(1).getAsJsonObject().get(getString(R.string.gpa)).getAsString());
+                gpaM.setVisibility(View.VISIBLE);
+            }
             credits.setText("Credits:" + result.get("credits").getAsString());
+
             String logged = !result.has(getString(R.string.ns_stat))? "0" : result.get(getString(R.string.ns_stat)).getAsJsonObject().get("active").getAsString();
             logTime.setText(getString(R.string.active_time) + logged);
+
             ImageView img = (ImageView) findViewById(R.id.profileImg_year);
             System.out.println(getIntent().getExtras().getString("picture"));
             String url = getString(R.string.api_photos) + getIntent().getExtras().getString(getString(R.string.prompt_login)) + ".bmp";
             Ion.with(img).load(url);
+
+
             TextView email = (TextView)findViewById(R.id.mail_value);
             email.setText(result.get("internal_email").getAsString());
             TextView call = (TextView)findViewById(R.id.phone_number);

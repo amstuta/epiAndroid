@@ -3,6 +3,7 @@ package com.epitech.epidroid;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.content.Intent;
@@ -153,6 +154,13 @@ public class MainActivity extends AbstractActivity {
 
             cred.setText("Credits: " + credits.toString());
             gpa.setText("GPA Bachelor: " + gpaBachelor);
+
+            if (gpas.size() > 1) {
+                TextView gpaM = (TextView)findViewById(R.id.gpa_master);
+                String gpaMaster = gpas.get(1).getAsJsonObject().get(getString(R.string.gpa)).getAsString();
+                gpaM.setText(gpaMaster);
+                gpaM.setVisibility(View.VISIBLE);
+            }
 
             JsonObject ns = result.get(getString(R.string.ns_stat)).getAsJsonObject();
             String timeActive = ns.get(getString(R.string.ns_stat_active)).getAsString();
