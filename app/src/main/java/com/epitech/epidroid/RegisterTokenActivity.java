@@ -35,6 +35,11 @@ public class RegisterTokenActivity extends ActionBarActivity {
     private Boolean     registered = false;
 
 
+    /**
+     * Automatically called whenever this activity is started.
+     * will pre-set the fields and retrieves the selected user's infos and picture.
+     * @param savedInstanceState bundle sent from previous activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

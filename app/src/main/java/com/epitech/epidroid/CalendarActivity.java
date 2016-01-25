@@ -43,6 +43,11 @@ public class CalendarActivity extends AbstractActivity {
     private JsonArray               activitiesObjects = new JsonArray();
 
 
+    /**
+     * Automatically called whenever this activity is started.
+     * Set the listener whenever a day is clicked.
+     * @param savedInstanceState bundle sent from previous activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -395,6 +395,10 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
     public void onNothingSelected(AdapterView<?> parent) {}
 
 
+    /**
+     * Listener for the modules list.
+     * Retrieves the module infos and calls @displayPopupRegister.
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
@@ -423,6 +427,10 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
     }
 
 
+    /**
+     * Displays the module's infos: title, description, registration dates.
+     * @param result: result of the request in JSON format.
+     */
     public void displayPopupRegister(final JsonObject result) {
         LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.popup_module_registration, null);
@@ -472,6 +480,10 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
     }
 
 
+    /**
+     * Register the student to the selected module.
+     * @param module: the JSON object representing the module's infos.
+     */
     public void registerToModule(final JsonObject module) {
         try {
             String scolarYear = module.get(getString(R.string.scolarYear)).getAsString();
@@ -501,6 +513,10 @@ public class ModulesActivity extends AbstractActivity implements AdapterView.OnI
     }
 
 
+    /**
+     * Unregister the student to the selected module.
+     * @param module: the JSON object representing the module's infos.
+     */
     public void unregisterToModule(final JsonObject module) {
         try {
             String scolarYear = module.get(getString(R.string.scolarYear)).getAsString();

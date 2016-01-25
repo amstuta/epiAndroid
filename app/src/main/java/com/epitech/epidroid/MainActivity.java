@@ -27,6 +27,11 @@ public class MainActivity extends AbstractActivity {
     private CharSequence            mTitle;
 
 
+    /**
+     * Automatically called whenever this activity is started.
+     * will pre-set the fields and retrieves the selected user's infos, picture and news.
+     * @param savedInstanceState bundle sent from previous activity.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
