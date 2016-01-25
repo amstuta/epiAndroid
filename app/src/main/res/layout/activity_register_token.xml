@@ -63,6 +63,13 @@
         <ImageView
             android:layout_width="@dimen/actions_size"
             android:layout_height="@dimen/actions_size"
+            android:id="@+id/add_to_calendar_button"
+            android:src="@drawable/ic_action_addcalendar"
+            android:clickable="true"/>
+
+        <ImageView
+            android:layout_width="@dimen/actions_size"
+            android:layout_height="@dimen/actions_size"
             android:src="@drawable/ic_action_previous"
             android:id="@+id/return_button"
             android:clickable="true"/>

@@ -70,7 +70,7 @@ public class CalendarActivity extends AbstractActivity {
 
                 @Override
                 public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
-                    Toast.makeText(getApplicationContext(), day + "/" + month + "/" + year, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), day + "/" + (month + 1) + "/" + year, Toast.LENGTH_LONG).show();
                     chosenDate = "" + year + "-" + (month + 1) + "-" + day;
 
                     Ion.with(getApplicationContext())
