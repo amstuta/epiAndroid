@@ -40,6 +40,7 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+
     public NavigationDrawerFragment() {
     }
 
@@ -54,7 +55,6 @@ public class NavigationDrawerFragment extends Fragment {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
-
         selectItem(mCurrentSelectedPosition);
     }
 
@@ -82,20 +82,15 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
 
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section0),
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section6),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                        getString(R.string.title_section4),
-                        getString(R.string.title_section5)
-                }));
-
+        mDrawerListView.setAdapter(new DrawerAdapter(getActivity(), new String[] {
+                getString(R.string.title_section0),
+                getString(R.string.title_section1),
+                getString(R.string.title_section6),
+                getString(R.string.title_section2),
+                getString(R.string.title_section3),
+                getString(R.string.title_section4),
+                getString(R.string.title_section5)
+        }));
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
@@ -153,7 +148,7 @@ public class NavigationDrawerFragment extends Fragment {
                     sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).commit();
                 }
 
-                getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                getActivity().supportInvalidateOptionsMenu();
             }
         };
 
