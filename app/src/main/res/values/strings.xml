@@ -45,6 +45,7 @@
     <string name="domain_module">module</string>
     <string name="domain_planning">planning</string>
     <string name="domain_projects">projects</string>
+    <string name="domain_files">project/files</string>
     <string name="domain_project">project</string>
     <string name="domain_event">event</string>
     <string name="domain_token">token</string>
