@@ -251,9 +251,6 @@ public class ProjectsActivity extends AbstractActivity {
             files.setAdapter(filesAdapter);
             files.addHeaderView(FileTitle);
 
-            //filesList.add("encule.pdf");
-            //filesAdapter.notifyDataSetChanged();
-
             btnDismiss.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
